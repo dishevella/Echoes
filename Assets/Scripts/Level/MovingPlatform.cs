@@ -55,6 +55,12 @@ public class MovingPlatform : MonoBehaviour
 
     void CheckActivation()
     {
+        if(triggerButton == null && triggerCollider == null)
+        {
+            isActivated = true;
+            return;
+        }
+
         // 按钮触发
         if (triggerButton != null && triggerButton.isTrigger)
         {

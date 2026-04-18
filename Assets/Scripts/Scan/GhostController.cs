@@ -8,7 +8,7 @@ public class GhostController : MonoBehaviour
     public List<string> targetTagList = new List<string>();
 
     [Header("Per Target Cooldown")]
-    public float targetCooldown = 3f;
+    public float targetCooldown = 2f;
 
     [Header("Ghost Fade")]
     public float ghostLifetime = 10f;
@@ -25,25 +25,15 @@ public class GhostController : MonoBehaviour
 
     private CircleCollider2D circle;
 
-    // 每个目标独立冷却
+    // 每个目标独立计时
     private Dictionary<GameObject, float> lastGhostTime = new Dictionary<GameObject, float>();
 
-    // 用来控制最大 ghost 数量
+    // 控制最大 ghost 数量
     private Queue<GameObject> activeGhosts = new Queue<GameObject>();
-
-    // 上一帧/当前帧的声呐半径
-    private float previousRadius = 0f;
-    private float currentRadius = 0f;
 
     void Awake()
     {
         circle = GetComponent<CircleCollider2D>();
-    }
-
-    void Start()
-    {
-        currentRadius = GetWorldRadius();
-        previousRadius = currentRadius;
     }
 
     void Update()
@@ -51,62 +41,44 @@ public class GhostController : MonoBehaviour
         CleanupNullTargets();
         CleanupNullGhosts();
 
-        previousRadius = currentRadius;
-        currentRadius = GetWorldRadius();
-
-        // 只在“正在向外扩张”时检测
-        if (currentRadius > previousRadius + 0.001f)
-        {
-            ScanWaveFront(previousRadius, currentRadius);
-        }
+        ScanAll();
     }
 
-    float GetWorldRadius()
+    void ScanAll()
     {
-        if (circle == null) return 0f;
+        float radius = circle.radius * Mathf.Abs(transform.lossyScale.x);
 
-        // 2D 圆形通常取 X 即可；如果你可能非均匀缩放，可改成 Max(x,y)
-        float worldScale = Mathf.Abs(transform.lossyScale.x);
-        return circle.radius * worldScale;
-    }
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius, detectLayer);
 
-    void ScanWaveFront(float innerRadius, float outerRadius)
-    {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, outerRadius, detectLayer);
-
-        // 防止同一个 root 因多个子碰撞器重复处理
         HashSet<GameObject> processedRoots = new HashSet<GameObject>();
 
         foreach (Collider2D hit in hits)
         {
             if (hit == null) continue;
 
-            GameObject target = hit.transform.root.gameObject;
-            if (target == null) continue;
-
-            if (processedRoots.Contains(target))
+            // 🔥 用 collider 的 tag 判断
+            if (!IsTargetTag(hit.tag))
                 continue;
 
-            processedRoots.Add(target);
+            GameObject root = hit.transform.root.gameObject;
 
-            if (!IsTargetTag(target.tag))
+            if (root == null) continue;
+
+            // 防止一个物体多个 collider 被重复处理
+            if (processedRoots.Contains(root))
                 continue;
 
-            // 不扫 ghost 自己
-            if (target.GetComponent<GhostFade>() != null)
+            processedRoots.Add(root);
+
+            // 防止 ghost 自己再被扫描
+            if (root.GetComponent<GhostFade>() != null)
                 continue;
 
-            float distance = Vector2.Distance(transform.position, target.transform.position);
-
-            // 只在“波前环带”内触发
-            if (distance <= innerRadius || distance > outerRadius)
+            if (!CanCreateGhost(root))
                 continue;
 
-            if (!CanCreateGhost(target))
-                continue;
-
-            CreateGhost(target);
-            lastGhostTime[target] = Time.time;
+            CreateGhost(root);
+            lastGhostTime[root] = Time.time;
         }
     }
 
@@ -117,8 +89,6 @@ public class GhostController : MonoBehaviour
 
     bool CanCreateGhost(GameObject target)
     {
-        if (target == null) return false;
-
         if (!lastGhostTime.ContainsKey(target))
             return true;
 
@@ -130,24 +100,21 @@ public class GhostController : MonoBehaviour
         GameObject ghost = Instantiate(target, target.transform.position, target.transform.rotation);
         ghost.transform.localScale = target.transform.localScale;
 
-        // 防止被再次识别为目标
         ghost.tag = "Untagged";
 
         DisableSelectedComponents(ghost);
 
         if (disableRigidbody2D)
         {
-            foreach (Rigidbody2D rb in ghost.GetComponentsInChildren<Rigidbody2D>(true))
+            foreach (var rb in ghost.GetComponentsInChildren<Rigidbody2D>(true))
             {
-                rb.linearVelocity = Vector2.zero;
-                rb.angularVelocity = 0f;
                 rb.simulated = false;
             }
         }
 
         if (disableCollider2D)
         {
-            foreach (Collider2D col in ghost.GetComponentsInChildren<Collider2D>(true))
+            foreach (var col in ghost.GetComponentsInChildren<Collider2D>(true))
             {
                 col.enabled = false;
             }
@@ -155,29 +122,30 @@ public class GhostController : MonoBehaviour
 
         if (disableAnimator)
         {
-            foreach (Animator anim in ghost.GetComponentsInChildren<Animator>(true))
+            foreach (var anim in ghost.GetComponentsInChildren<Animator>(true))
             {
                 anim.enabled = false;
             }
         }
-
+        MakeGhostVisible(ghost);
         GhostFade fade = ghost.AddComponent<GhostFade>();
         fade.lifetime = ghostLifetime;
         fade.startAlpha = startAlpha;
 
         RegisterGhost(ghost);
+
     }
 
     void DisableSelectedComponents(GameObject ghost)
     {
-        foreach (MonoBehaviour script in ghost.GetComponentsInChildren<MonoBehaviour>(true))
+        foreach (var script in ghost.GetComponentsInChildren<MonoBehaviour>(true))
         {
             if (script == null) continue;
             if (script is GhostFade) continue;
 
-            string typeName = script.GetType().Name;
+            string name = script.GetType().Name;
 
-            if (disableComponentNames.Contains(typeName))
+            if (disableComponentNames.Contains(name))
             {
                 script.enabled = false;
             }
@@ -192,51 +160,51 @@ public class GhostController : MonoBehaviour
         {
             GameObject oldest = activeGhosts.Dequeue();
             if (oldest != null)
-            {
                 Destroy(oldest);
-            }
+        }
+    }
+
+    void MakeGhostVisible(GameObject ghost)
+    {
+        SpriteRenderer[] renderers = ghost.GetComponentsInChildren<SpriteRenderer>(true);
+
+        foreach (SpriteRenderer sr in renderers)
+        {
+            if (sr != null)
+                sr.enabled = true;
         }
     }
 
     void CleanupNullTargets()
     {
-        List<GameObject> toRemove = null;
+        List<GameObject> removeList = new List<GameObject>();
 
         foreach (var kv in lastGhostTime)
         {
             if (kv.Key == null)
-            {
-                if (toRemove == null) toRemove = new List<GameObject>();
-                toRemove.Add(kv.Key);
-            }
+                removeList.Add(kv.Key);
         }
 
-        if (toRemove != null)
+        foreach (var key in removeList)
         {
-            foreach (GameObject key in toRemove)
-            {
-                lastGhostTime.Remove(key);
-            }
+            lastGhostTime.Remove(key);
         }
     }
 
     void CleanupNullGhosts()
     {
-        if (activeGhosts.Count == 0) return;
-
         Queue<GameObject> newQueue = new Queue<GameObject>();
 
         while (activeGhosts.Count > 0)
         {
             GameObject g = activeGhosts.Dequeue();
             if (g != null)
-            {
                 newQueue.Enqueue(g);
-            }
         }
 
         activeGhosts = newQueue;
     }
+
 
     void OnDrawGizmosSelected()
     {
@@ -244,13 +212,7 @@ public class GhostController : MonoBehaviour
         if (circle == null) return;
 
         Gizmos.color = Color.cyan;
-        float r = Application.isPlaying ? currentRadius : GetPreviewRadius();
+        float r = circle.radius * Mathf.Abs(transform.lossyScale.x);
         Gizmos.DrawWireSphere(transform.position, r);
-    }
-
-    float GetPreviewRadius()
-    {
-        float worldScale = Mathf.Abs(transform.lossyScale.x);
-        return circle.radius * worldScale;
     }
 }
