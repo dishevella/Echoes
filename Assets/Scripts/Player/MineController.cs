@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class MineController : MonoBehaviour
 {
-    public int damage = 100;
     public float explosionRadius = 2f;
     public LayerMask enemyLayer;
     
@@ -16,7 +15,8 @@ public class MineController : MonoBehaviour
         {
             if(hit.TryGetComponent<IDamageable>(out IDamageable ID))
             {
-                ID.TakeDamage(damage);
+                DamageInfo info = new DamageInfo();
+                ID.TakeDamage(info);
             }
         }
         Destroy(gameObject);
