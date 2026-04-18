@@ -15,7 +15,12 @@ public class MineController : MonoBehaviour
         {
             if(hit.TryGetComponent<IDamageable>(out IDamageable ID))
             {
-                DamageInfo info = new DamageInfo();
+                DamageInfo info = new DamageInfo
+                {
+                    hitPoint = hit.transform.position,
+                    SourcePosition = transform.position,
+                    
+                };
                 ID.TakeDamage(info);
             }
         }

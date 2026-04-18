@@ -9,6 +9,7 @@ TagManager:
   - MovingPlatform
   - Enemy
   - Faded
+  - Prop
   layers:
   - Default
   - TransparentFX
