@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1455182505058196177}
   - component: {fileID: 8467052496755688884}
   - component: {fileID: -4188361023673258685}
+  - component: {fileID: 3498072436315484557}
   m_Layer: 0
   m_Name: Mine
   m_TagString: Untagged
@@ -87,6 +88,19 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &3498072436315484557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204850209627226756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f199c8e568426d64a82551b702232f98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Prop
+  propSO: {fileID: 11400000, guid: f7658f75f42f4a04aa869bd232d65066, type: 2}
 --- !u!1 &6891004359140373777
 GameObject:
   m_ObjectHideFlags: 0

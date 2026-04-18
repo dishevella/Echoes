@@ -8,9 +8,9 @@ public class MovementController : MonoBehaviour
     private Rigidbody2D rb;
 
     [Header("Movement")]
-    public float moveSpeed = 10f;
-    public float sprintSpeed = 15f;
-    public float jumpSpeed = 5f;
+    public float moveSpeed = 5f;
+    public float sprintSpeed = 10f;
+    public float jumpSpeed = 15f;
     private bool canMove = true;
 
     private float moveInput;
@@ -125,5 +125,15 @@ public class MovementController : MonoBehaviour
     public void ResumeMove()
     {
         canMove = true;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("Prop"))
+        {
+            PropSO propSO = collision.GetComponent<Prop>().GetPropSO();
+            BagSystem.instance.AddProp(propSO);
+            Destroy(collision.gameObject);
+        }
     }
 }

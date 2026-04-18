@@ -2,28 +2,31 @@ using UnityEngine;
 
 public class PlayerMinePlacer : MonoBehaviour
 {
+    public static PlayerMinePlacer instance;
+    
     private Transform placePos;
 
-    public GameObject minePrefab;
+    public PropSO mineSO;
     public float placeDelay = 2f;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
         placePos = transform.Find("MinePlacePos");
     }
 
-    private void Update()
+    public void PlaceMine()
     {
-        if(Input.GetKeyDown(KeyCode.E) && MovementController.instance.IsGrounded())
-        {
-            Debug.Log("111");
-            MovementController.instance.StopMove(placeDelay);
-            Invoke("PlaceMine", placeDelay);
-        }
+        MovementController.instance.StopMove(placeDelay);
+        Invoke("SpawnMine", placeDelay);
     }
 
-    private void PlaceMine()
+    private void SpawnMine()
     {
-        Instantiate(minePrefab, placePos.position, Quaternion.identity);
+        Instantiate(mineSO.prefab, placePos.position, Quaternion.identity);
     }
 }
