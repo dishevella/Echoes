@@ -16,6 +16,7 @@ public class PlayerMinePlacer : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.E) && MovementController.instance.IsGrounded())
         {
+            Debug.Log("111");
             MovementController.instance.StopMove(placeDelay);
             Invoke("PlaceMine", placeDelay);
         }
