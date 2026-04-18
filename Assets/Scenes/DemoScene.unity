@@ -2856,6 +2856,7 @@ GameObject:
   - component: {fileID: 1008623924}
   - component: {fileID: 1008623927}
   - component: {fileID: 1008623928}
+  - component: {fileID: 1008623931}
   - component: {fileID: 1008623929}
   - component: {fileID: 1008623930}
   m_Layer: 0
@@ -3035,6 +3036,7 @@ MonoBehaviour:
   staminaBar: {fileID: 1153934064}
   consumeRate: 10
   resumeRate: 5
+  wallLock: {fileID: 1008623931}
 --- !u!114 &1008623930
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -27,6 +27,8 @@ public class MovementController : MonoBehaviour
     public float consumeRate = 10;
     public float resumeRate = 5;
 
+    [Header("Wall Dection")]
+    public PlayerWallLock wallLock;
     private void Awake()
     {
         instance = this;
@@ -44,17 +46,21 @@ public class MovementController : MonoBehaviour
         
         moveInput = 0;
 
-        if (Input.GetKey(KeyCode.A))
+        bool canMoveLeft = !wallLock.TouchingLeftWall || wallLock.IsGrounded;
+        bool canMoveRight = !wallLock.TouchingRightWall || wallLock.IsGrounded;
+
+        if (Input.GetKey(KeyCode.A) && canMoveLeft)
         {
             moveInput = -1f;
             transform.localScale = new Vector3(-1f, 1f, 1f);
-        }        
-        if (Input.GetKey(KeyCode.D))
+        }
+
+        if (Input.GetKey(KeyCode.D) && canMoveRight)
         {
             moveInput = 1f;
             transform.localScale = new Vector3(1f, 1f, 1f);
         }
-            
+
 
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
