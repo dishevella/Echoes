@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class MovementController : MonoBehaviour
 {
     public static MovementController instance;
-    
+
     private Rigidbody2D rb;
 
     [Header("Movement")]
@@ -22,9 +22,14 @@ public class MovementController : MonoBehaviour
     public LayerMask groundLayer;
 
     [Header("Stamina")]
-    public Image staminaBar;
-    public float consumeRate = 10;
-    public float resumeRate = 5;
+    public Image staminaBar;   // 可以为空
+    public float consumeRate = 10f;
+    public float resumeRate = 5f;
+
+    private bool HasStaminaBar()
+    {
+        return staminaBar != null;
+    }
 
     private void Awake()
     {
@@ -39,10 +44,11 @@ public class MovementController : MonoBehaviour
 
     private void Update()
     {
-        moveInput = 0;
+        moveInput = 0f;
 
         if (Input.GetKey(KeyCode.A))
             moveInput = -1f;
+
         if (Input.GetKey(KeyCode.D))
             moveInput = 1f;
 
@@ -51,9 +57,10 @@ public class MovementController : MonoBehaviour
             isJump = true;
         }
 
-        if(Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            if(staminaBar.fillAmount>0.01f)
+            // 如果没有 staminaBar，默认允许冲刺
+            if (!HasStaminaBar() || staminaBar.fillAmount > 0.01f)
             {
                 isSprint = true;
             }
@@ -62,32 +69,49 @@ public class MovementController : MonoBehaviour
                 isSprint = false;
             }
 
-            if (Mathf.Abs(rb.linearVelocity.x) > 0.01f)
+            // 只有有 staminaBar 时，才处理消耗/恢复
+            if (HasStaminaBar())
             {
-                staminaBar.fillAmount -= consumeRate * Time.deltaTime;
-            }
-            else
-            {
-                staminaBar.fillAmount += resumeRate * Time.deltaTime;
+                if (Mathf.Abs(rb.linearVelocity.x) > 0.01f)
+                {
+                    staminaBar.fillAmount = Mathf.Clamp01(
+                        staminaBar.fillAmount - consumeRate * Time.deltaTime
+                    );
+                }
+                else
+                {
+                    staminaBar.fillAmount = Mathf.Clamp01(
+                        staminaBar.fillAmount + resumeRate * Time.deltaTime
+                    );
+                }
             }
         }
         else
         {
             isSprint = false;
-            staminaBar.fillAmount += resumeRate * Time.deltaTime;
+
+            // 只有有 staminaBar 时，才恢复
+            if (HasStaminaBar())
+            {
+                staminaBar.fillAmount = Mathf.Clamp01(
+                    staminaBar.fillAmount + resumeRate * Time.deltaTime
+                );
+            }
         }
     }
 
     private void FixedUpdate()
     {
         float speed;
-        if(!isSprint)
+
+        if (!isSprint)
             speed = moveSpeed;
         else
             speed = sprintSpeed;
+
         rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
 
-        if(isJump)
+        if (isJump)
         {
             rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
             isJump = false;

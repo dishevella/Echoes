@@ -13,6 +13,7 @@ public class SonarBrowser : MonoBehaviour
 
     private float timer;
     private bool hasTriggered = false;
+    private bool isReturning = false;
 
     void Awake()
     {
@@ -22,7 +23,6 @@ public class SonarBrowser : MonoBehaviour
 
     void Update()
     {
-        // 匀速缩放
         transform.localScale = Vector3.MoveTowards(
             transform.localScale,
             targetScale,
@@ -33,6 +33,19 @@ public class SonarBrowser : MonoBehaviour
         {
             timer = 0;
             hasTriggered = false;
+            isReturning = false;
+
+            SetScale(1f, repairSpeed);
+            return;
+        }
+
+        // 如果正在缩小 → 等它缩完
+        if (isReturning)
+        {
+            if (Vector3.Distance(transform.localScale, originalScale) < 0.01f)
+            {
+                isReturning = false;
+            }
             return;
         }
 
@@ -43,7 +56,6 @@ public class SonarBrowser : MonoBehaviour
             hasTriggered = true;
         }
 
-        // 计时
         timer += Time.deltaTime;
 
         if (timer >= sonarTime)
@@ -52,9 +64,12 @@ public class SonarBrowser : MonoBehaviour
             hasTriggered = false;
 
             SetScale(1f, repairSpeed);
+
+            // 🔥 标记：进入缩小阶段
+            isReturning = true;
         }
     }
-
+    
     public void SetScale(float index, float s)
     {
         targetScale = originalScale * index;
