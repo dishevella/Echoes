@@ -2108,11 +2108,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e4bfc6dd31138144b82fd205061ca8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GhostController
-  scanInterval: 3
+  detectLayer:
+    serializedVersion: 2
+    m_Bits: 0
   targetTagList:
   - Enemy
+  targetCooldown: 3
   ghostLifetime: 10
   startAlpha: 0.7
+  maxGhostCount: 50
   disableRigidbody2D: 1
   disableCollider2D: 1
   disableAnimator: 1
@@ -2336,6 +2340,7 @@ GameObject:
   - component: {fileID: 1008623924}
   - component: {fileID: 1008623927}
   - component: {fileID: 1008623928}
+  - component: {fileID: 1008623931}
   - component: {fileID: 1008623929}
   - component: {fileID: 1008623930}
   m_Layer: 0
@@ -2515,6 +2520,7 @@ MonoBehaviour:
   staminaBar: {fileID: 1153934064}
   consumeRate: 10
   resumeRate: 5
+  wallLock: {fileID: 1008623931}
 --- !u!114 &1008623930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2529,6 +2535,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMinePlacer
   minePrefab: {fileID: 204850209627226756, guid: 6492e7e8ff4d9dc4b9ae44e9bef4a8a4, type: 3}
   placeDelay: 2
+--- !u!114 &1008623931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008623922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73919f5c6d3721f4ebb4c7e44af3a6ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWallLock
 --- !u!1 &1072215354
 GameObject:
   m_ObjectHideFlags: 0
