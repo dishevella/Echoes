@@ -4,13 +4,14 @@ using UnityEngine.UI;
 public class MovementController : MonoBehaviour
 {
     public static MovementController instance;
-
+    
     private Rigidbody2D rb;
 
     [Header("Movement")]
     public float moveSpeed = 10f;
     public float sprintSpeed = 15f;
     public float jumpSpeed = 5f;
+    private bool canMove = true;
 
     private float moveInput;
     private bool isSprint = false;
@@ -22,14 +23,9 @@ public class MovementController : MonoBehaviour
     public LayerMask groundLayer;
 
     [Header("Stamina")]
-    public Image staminaBar;   // 可以为空
-    public float consumeRate = 10f;
-    public float resumeRate = 5f;
-
-    private bool HasStaminaBar()
-    {
-        return staminaBar != null;
-    }
+    public Image staminaBar;
+    public float consumeRate = 10;
+    public float resumeRate = 5;
 
     private void Awake()
     {
@@ -44,23 +40,30 @@ public class MovementController : MonoBehaviour
 
     private void Update()
     {
-        moveInput = 0f;
+        if (!canMove) return;
+        
+        moveInput = 0;
 
         if (Input.GetKey(KeyCode.A))
+        {
             moveInput = -1f;
-
+            transform.localScale = new Vector3(-1f, 1f, 1f);
+        }        
         if (Input.GetKey(KeyCode.D))
+        {
             moveInput = 1f;
+            transform.localScale = new Vector3(1f, 1f, 1f);
+        }
+            
 
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
             isJump = true;
         }
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        if(Input.GetKey(KeyCode.LeftShift))
         {
-            // 如果没有 staminaBar，默认允许冲刺
-            if (!HasStaminaBar() || staminaBar.fillAmount > 0.01f)
+            if(staminaBar.fillAmount>0.01f)
             {
                 isSprint = true;
             }
@@ -69,49 +72,34 @@ public class MovementController : MonoBehaviour
                 isSprint = false;
             }
 
-            // 只有有 staminaBar 时，才处理消耗/恢复
-            if (HasStaminaBar())
+            if (Mathf.Abs(rb.linearVelocity.x) > 0.01f)
             {
-                if (Mathf.Abs(rb.linearVelocity.x) > 0.01f)
-                {
-                    staminaBar.fillAmount = Mathf.Clamp01(
-                        staminaBar.fillAmount - consumeRate * Time.deltaTime
-                    );
-                }
-                else
-                {
-                    staminaBar.fillAmount = Mathf.Clamp01(
-                        staminaBar.fillAmount + resumeRate * Time.deltaTime
-                    );
-                }
+                staminaBar.fillAmount -= consumeRate * Time.deltaTime;
+            }
+            else
+            {
+                staminaBar.fillAmount += resumeRate * Time.deltaTime;
             }
         }
         else
         {
             isSprint = false;
-
-            // 只有有 staminaBar 时，才恢复
-            if (HasStaminaBar())
-            {
-                staminaBar.fillAmount = Mathf.Clamp01(
-                    staminaBar.fillAmount + resumeRate * Time.deltaTime
-                );
-            }
+            staminaBar.fillAmount += resumeRate * Time.deltaTime;
         }
     }
 
     private void FixedUpdate()
     {
-        float speed;
+        if (!canMove) return;
 
-        if (!isSprint)
+        float speed;
+        if(!isSprint)
             speed = moveSpeed;
         else
             speed = sprintSpeed;
-
         rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
 
-        if (isJump)
+        if(isJump)
         {
             rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
             isJump = false;
@@ -126,5 +114,16 @@ public class MovementController : MonoBehaviour
     public bool IsMove()
     {
         return rb.linearVelocity.magnitude > 0.01f;
+    }
+
+    public void StopMove(float time)
+    {
+        canMove = false;
+        rb.linearVelocity = Vector2.zero;
+        Invoke("ResumeMove", time);
+    }
+    public void ResumeMove()
+    {
+        canMove = true;
     }
 }
