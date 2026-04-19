@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PlayerTouch : MonoBehaviour
 {
-    public bool Dead = false;
     public Animator anim;
 
     private void Awake()
@@ -17,12 +16,11 @@ public class PlayerTouch : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (Dead) return;
+        if (PlayerHealth.instance.IsDead()) return;
 
         if (other.CompareTag("Thorn"))
         {
             Debug.Log("玩家碰到刺了！");
-            Dead = true;
             if (anim != null)
             {
                 anim.SetBool("Dead", true);

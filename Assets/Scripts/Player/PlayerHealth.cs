@@ -61,4 +61,9 @@ public class PlayerHealth : MonoBehaviour,IDamageable
         isDead = false;
         transform.position = checkPoint.transform.position;
     }
+
+    public bool IsDead()
+    {
+        return isDead;
+    }
 }
