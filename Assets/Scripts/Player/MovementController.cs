@@ -4,18 +4,34 @@ using UnityEngine.UI;
 public class MovementController : MonoBehaviour
 {
     public static MovementController instance;
-    
     private Rigidbody2D rb;
+    private SpriteRenderer sr;
+
+    [Header("Animation")]
+    public Animator Anim;
 
     [Header("Movement")]
-    public float moveSpeed = 5f;
-    public float sprintSpeed = 10f;
-    public float jumpSpeed = 15f;
-    private bool canMove = true;
+    public float moveSpeed = 10f;
 
+    [Header("I Wanna Physics")]
+    public float jumpVelocity = 16f;
+    public float gravity = -40f;
+    public float maxFallSpeed = -20f;
+
+    [Header("Jump Assist")]
+    public float coyoteTime = 0.1f;     // 离地后还能跳
+    public float jumpBufferTime = 0.1f; // 提前按跳
+
+    [Header("Jump Count")]
+    public int maxJumpCount = 2;
+    private int currentJumpCount;
+    private bool wasGrounded;
+
+    private float coyoteTimer;
+    private float jumpBufferTimer;
+
+    private bool canMove = true;
     private float moveInput;
-    private bool isSprint = false;
-    private bool isJump = false;
 
     [Header("GroundCheck")]
     private Transform groundCheck;
@@ -38,48 +54,78 @@ public class MovementController : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
         groundCheck = transform.Find("GroundCheck");
+
+        currentJumpCount = maxJumpCount;
+        wasGrounded = IsGrounded();
     }
 
     private void Update()
     {
         if (!canMove) return;
-        
+
         moveInput = 0;
-        
+
         bool canMoveLeft = !wallLock.TouchingLeftWall || wallLock.IsGrounded;
         bool canMoveRight = !wallLock.TouchingRightWall || wallLock.IsGrounded;
 
         if (Input.GetKey(KeyCode.A) && canMoveLeft)
         {
             moveInput = -1f;
-            transform.localScale = new Vector3(-1f, 1f, 1f);
+            sr.flipX = true;
         }
 
         if (Input.GetKey(KeyCode.D) && canMoveRight)
         {
             moveInput = 1f;
-            transform.localScale = new Vector3(1f, 1f, 1f);
+            sr.flipX = false;
         }
 
+        // ===== 地面检测 =====
+        bool grounded = IsGrounded();
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        // 只有“刚接地”时才恢复跳跃次数
+        if (grounded && !wasGrounded)
         {
-            isJump = true;
+            currentJumpCount = maxJumpCount;
         }
 
-        if(Input.GetKey(KeyCode.LeftShift))
-        {
-            if(staminaBar.fillAmount>0.01f)
-            {
-                isSprint = true;
-            }
-            else
-            {
-                isSprint = false;
-            }
+        wasGrounded = grounded;
 
-            if (Mathf.Abs(rb.linearVelocity.x) > 0.01f)
+        // ===== Jump Buffer =====
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            jumpBufferTimer = jumpBufferTime;
+        }
+        else
+        {
+            jumpBufferTimer -= Time.deltaTime;
+        }
+
+        // ===== 执行跳跃 =====
+        // 只要还有跳跃次数，就可以跳
+        if (jumpBufferTimer > 0 && currentJumpCount > 0)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpVelocity);
+
+            currentJumpCount--;
+            jumpBufferTimer = 0;
+            coyoteTimer = 0;
+
+            Anim.SetTrigger("Jump");
+        }
+
+        // ===== 短跳（松开变矮）=====
+        if (Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity.y > 0)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+        }
+
+        // ===== 体力（保留你原逻辑）=====
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            if (staminaBar.fillAmount > 0.01f)
             {
                 staminaBar.fillAmount -= consumeRate * Time.deltaTime;
             }
@@ -90,27 +136,27 @@ public class MovementController : MonoBehaviour
         }
         else
         {
-            isSprint = false;
             staminaBar.fillAmount += resumeRate * Time.deltaTime;
         }
+
+        // ===== 动画 =====
+        UpdateAnimation();
     }
 
     private void FixedUpdate()
     {
         if (!canMove) return;
 
-        float speed;
-        if(!isSprint)
-            speed = moveSpeed;
-        else
-            speed = sprintSpeed;
-        rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
+        // ===== 水平移动（恒定速度）=====
+        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
 
-        if(isJump)
-        {
-            rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
-            isJump = false;
-        }
+        // ===== 手动重力 =====
+        float newY = rb.linearVelocity.y + gravity * Time.fixedDeltaTime;
+
+        if (newY < maxFallSpeed)
+            newY = maxFallSpeed;
+
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, newY);
     }
 
     public bool IsGrounded()
@@ -120,7 +166,7 @@ public class MovementController : MonoBehaviour
 
     public bool IsMove()
     {
-        return rb.linearVelocity.magnitude > 0.01f;
+        return Mathf.Abs(rb.linearVelocity.x) > 0.01f;
     }
 
     public void StopMove(float time)
@@ -129,6 +175,7 @@ public class MovementController : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         Invoke("ResumeMove", time);
     }
+
     public void ResumeMove()
     {
         canMove = true;
@@ -136,11 +183,24 @@ public class MovementController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.CompareTag("Prop"))
+        if (collision.gameObject.CompareTag("Prop"))
         {
-            PropSO propSO = collision.GetComponent<Prop>().GetPropSO();
-            BagSystem.instance.AddProp(propSO);
-            Destroy(collision.gameObject);
+            if (!BagSystem.instance.IsHaveProp(collision.gameObject.GetComponent<Prop>().GetPropSO()))
+            {
+                PropSO propSO = collision.GetComponent<Prop>().GetPropSO();
+                BagSystem.instance.AddProp(propSO);
+                Destroy(collision.gameObject);
+            }
         }
+    }
+
+    void UpdateAnimation()
+    {
+        float speed = Mathf.Abs(rb.linearVelocity.x);
+
+        Anim.SetFloat("Speed", speed);
+
+        bool grounded = IsGrounded();
+        Anim.SetBool("IsGrounded", grounded);
     }
 }

@@ -3,6 +3,9 @@ using System.Collections;
 
 public class SonarBrowser : MonoBehaviour
 {
+    [Header("Follow")]
+    public Transform target; // ⭐ 玩家
+
     public Vector3 originalScale;
     public float sonarSpeed = 5f;
     public float repairSpeed;
@@ -23,6 +26,13 @@ public class SonarBrowser : MonoBehaviour
 
     void Update()
     {
+        // ⭐ 跟随玩家
+        if (target != null)
+        {
+            transform.position = target.position;
+        }
+
+        // ⭐ 缩放逻辑（原样保留）
         transform.localScale = Vector3.MoveTowards(
             transform.localScale,
             targetScale,
@@ -65,7 +75,7 @@ public class SonarBrowser : MonoBehaviour
 
             SetScale(1f, repairSpeed);
 
-            // 🔥 标记：进入缩小阶段
+            // 进入缩小阶段
             isReturning = true;
         }
     }
