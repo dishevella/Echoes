@@ -16,7 +16,7 @@ public class Test : MonoBehaviour
         {
 
         };
-        if(Input.GetKeyDown(KeyCode.A ))
+        if(Input.GetKeyDown(KeyCode.T  ))
         {
             enemyHealth.TakeDamage(info);
         }
