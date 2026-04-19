@@ -11,9 +11,12 @@ TagManager:
   - Faded
   - Prop
   - Thorn
+<<<<<<< HEAD
   - Die
   - Relay
   - Interactive
+=======
+>>>>>>> parent of f80059c (Linlevel)
   layers:
   - Default
   - TransparentFX
