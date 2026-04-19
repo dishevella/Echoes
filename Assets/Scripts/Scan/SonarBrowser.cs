@@ -1,18 +1,18 @@
 using UnityEngine;
-using System.Collections;
 
 public class SonarBrowser : MonoBehaviour
 {
     [Header("Follow")]
-    public Transform target; // ⭐ 玩家
+    public Transform target; // 玩家
 
+    [Header("Scale")]
     public Vector3 originalScale;
     public float sonarSpeed = 5f;
-    public float repairSpeed;
-    public float maxScale;
+    public float repairSpeed = 5f;
+    public float maxScale = 3f;
     private Vector3 targetScale;
     private float speed;
-    public float sonarTime;
+    public float sonarTime = 1f;
 
     private float timer;
     private bool hasTriggered = false;
@@ -26,22 +26,20 @@ public class SonarBrowser : MonoBehaviour
 
     void Update()
     {
-        // ⭐ 跟随玩家
         if (target != null)
         {
             transform.position = target.position;
         }
 
-        // ⭐ 缩放逻辑（原样保留）
         transform.localScale = Vector3.MoveTowards(
             transform.localScale,
             targetScale,
             speed * Time.deltaTime
         );
 
-        if (MovementController.instance.IsMove())
+        if (MovementController.instance != null && MovementController.instance.IsMove())
         {
-            timer = 0;
+            timer = 0f;
             hasTriggered = false;
             isReturning = false;
 
@@ -49,7 +47,6 @@ public class SonarBrowser : MonoBehaviour
             return;
         }
 
-        // 如果正在缩小 → 等它缩完
         if (isReturning)
         {
             if (Vector3.Distance(transform.localScale, originalScale) < 0.01f)
@@ -59,7 +56,6 @@ public class SonarBrowser : MonoBehaviour
             return;
         }
 
-        // 第一次触发 sonar
         if (!hasTriggered)
         {
             SetScale(maxScale, sonarSpeed);
@@ -70,16 +66,14 @@ public class SonarBrowser : MonoBehaviour
 
         if (timer >= sonarTime)
         {
-            timer = 0;
+            timer = 0f;
             hasTriggered = false;
 
             SetScale(1f, repairSpeed);
-
-            // 进入缩小阶段
             isReturning = true;
         }
     }
-    
+
     public void SetScale(float index, float s)
     {
         targetScale = originalScale * index;

@@ -11,6 +11,8 @@ TagManager:
   - Faded
   - Prop
   - Thorn
+  - Die
+  - Relay
   layers:
   - Default
   - TransparentFX
@@ -19,9 +21,9 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
-  - 
-  - 
+  - Stable
+  - Dynamic
+  - Visible
   - 
   - 
   - 
