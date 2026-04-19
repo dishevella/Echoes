@@ -27,7 +27,7 @@ public class MovementController : MonoBehaviour
     private int currentJumpCount;
     private bool wasGrounded;
 
-    private float coyoteTimer;
+    //private float coyoteTimer;
     private float jumpBufferTimer;
 
     private bool canMove = true;
@@ -45,6 +45,8 @@ public class MovementController : MonoBehaviour
 
     [Header("Wall Dection")]
     public PlayerWallLock wallLock;
+
+    private GameObject currentInteractiveObject;
 
     private void Awake()
     {
@@ -67,16 +69,16 @@ public class MovementController : MonoBehaviour
 
         moveInput = 0;
 
-        bool canMoveLeft = !wallLock.TouchingLeftWall || wallLock.IsGrounded;
-        bool canMoveRight = !wallLock.TouchingRightWall || wallLock.IsGrounded;
+        //bool canMoveLeft = !wallLock.TouchingLeftWall || wallLock.IsGrounded;
+        //bool canMoveRight = !wallLock.TouchingRightWall || wallLock.IsGrounded;
 
-        if (Input.GetKey(KeyCode.A) && canMoveLeft)
+        if (Input.GetKey(KeyCode.A))
         {
             moveInput = -1f;
             sr.flipX = true;
         }
 
-        if (Input.GetKey(KeyCode.D) && canMoveRight)
+        if (Input.GetKey(KeyCode.D))
         {
             moveInput = 1f;
             sr.flipX = false;
@@ -111,7 +113,7 @@ public class MovementController : MonoBehaviour
 
             currentJumpCount--;
             jumpBufferTimer = 0;
-            coyoteTimer = 0;
+            //coyoteTimer = 0;
 
             Anim.SetTrigger("Jump");
         }
@@ -142,6 +144,22 @@ public class MovementController : MonoBehaviour
         }
         // ===== 动画 =====
         UpdateAnimation();
+
+        if (Input.GetKeyDown(KeyCode.F) && currentInteractiveObject!=null)
+        {
+            if (currentInteractiveObject.TryGetComponent<PuzzleExampleController>(out var puzzleExampleController))
+            {
+                puzzleExampleController.Interact();
+            }
+            else if (currentInteractiveObject.TryGetComponent<PuzzleTrigger>(out var puzzleTrigger))
+            {
+                puzzleTrigger.Interact();
+            }
+            else if(currentInteractiveObject.TryGetComponent<KeyChecker>(out var keyChecker))
+            {
+                keyChecker.Interact();
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -192,6 +210,25 @@ public class MovementController : MonoBehaviour
                 BagSystem.instance.AddProp(propSO);
                 Destroy(collision.gameObject);
             }
+        }       
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Interactive"))
+        {
+            currentInteractiveObject = collision.gameObject;         
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Interactive"))
+        {
+            if (currentInteractiveObject == collision.gameObject)
+            {
+                currentInteractiveObject = null;
+            }           
         }
     }
 
@@ -202,6 +239,6 @@ public class MovementController : MonoBehaviour
         Anim.SetFloat("Speed", speed);
 
         bool grounded = IsGrounded();
-        Anim.SetBool("IsGrounded", grounded);
+        //Anim.SetBool("IsGrounded", grounded);
     }
 }

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class SleepingBeauty : MonoBehaviour, ISonarScannable
 {
+    public Animator anim;
+    
     [Header("Move")]
     public float moveSpeed = 2f;
     public bool startMoveRight = true;
@@ -24,6 +26,7 @@ public class SleepingBeauty : MonoBehaviour, ISonarScannable
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
 
         moveDir = startMoveRight ? 1 : -1;
         UpdateFace();
@@ -90,6 +93,7 @@ public class SleepingBeauty : MonoBehaviour, ISonarScannable
     {
         if (isDead) return;
         isActivated = true;
+        anim.SetTrigger("Activate");
     }
 
     public void LetDie()

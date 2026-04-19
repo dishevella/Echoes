@@ -13,6 +13,7 @@ TagManager:
   - Thorn
   - Die
   - Relay
+  - Interactive
   layers:
   - Default
   - TransparentFX

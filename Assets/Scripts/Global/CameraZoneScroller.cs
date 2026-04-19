@@ -49,8 +49,6 @@ public class CameraZoneScroller : MonoBehaviour
     {
         Vector3 playerViewport = cam.WorldToViewportPoint(player.position);
 
-        bool trigger = false;
-
         float playerX = player.position.x;
         float playerY = player.position.y;
 
@@ -65,13 +63,11 @@ public class CameraZoneScroller : MonoBehaviour
         {
             float desiredViewportX = sidePercent;
             desiredX = playerX + halfWidth - 2f * halfWidth * desiredViewportX;
-            trigger = true;
         }
         else if (playerViewport.x <= sidePercent)
         {
             float desiredViewportX = 1f - sidePercent;
             desiredX = playerX + halfWidth - 2f * halfWidth * desiredViewportX;
-            trigger = true;
         }
 
         // ===== Y轴 =====
@@ -79,13 +75,11 @@ public class CameraZoneScroller : MonoBehaviour
         {
             float desiredViewportY = sidePercent;
             desiredY = playerY + halfHeight - 2f * halfHeight * desiredViewportY;
-            trigger = true;
         }
         else if (playerViewport.y <= sidePercent)
         {
             float desiredViewportY = 1f - sidePercent;
             desiredY = playerY + halfHeight - 2f * halfHeight * desiredViewportY;
-            trigger = true;
         }
 
         desiredX = Mathf.Clamp(desiredX, minX, maxX);
