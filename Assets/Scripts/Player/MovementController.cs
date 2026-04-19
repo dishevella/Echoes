@@ -46,6 +46,8 @@ public class MovementController : MonoBehaviour
     [Header("Wall Dection")]
     public PlayerWallLock wallLock;
 
+    private GameObject currentInteractiveObject;
+
     private void Awake()
     {
         instance = this;
@@ -141,6 +143,22 @@ public class MovementController : MonoBehaviour
 
         // ===== 动画 =====
         UpdateAnimation();
+
+        if (Input.GetKeyDown(KeyCode.F) && currentInteractiveObject!=null)
+        {
+            if (currentInteractiveObject.TryGetComponent<PuzzleExampleController>(out var puzzleExampleController))
+            {
+                puzzleExampleController.Interact();
+            }
+            else if (currentInteractiveObject.TryGetComponent<PuzzleTrigger>(out var puzzleTrigger))
+            {
+                puzzleTrigger.Interact();
+            }
+            else if(currentInteractiveObject.TryGetComponent<KeyChecker>(out var keyChecker))
+            {
+                keyChecker.Interact();
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -191,6 +209,25 @@ public class MovementController : MonoBehaviour
                 BagSystem.instance.AddProp(propSO);
                 Destroy(collision.gameObject);
             }
+        }       
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Interactive"))
+        {
+            currentInteractiveObject = collision.gameObject;         
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Interactive"))
+        {
+            if (currentInteractiveObject == collision.gameObject)
+            {
+                currentInteractiveObject = null;
+            }           
         }
     }
 

@@ -11,6 +11,7 @@ TagManager:
   - Faded
   - Prop
   - Thorn
+  - Interactive
   layers:
   - Default
   - TransparentFX
