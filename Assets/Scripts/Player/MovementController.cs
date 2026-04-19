@@ -146,9 +146,12 @@ public class MovementController : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Prop"))
         {
-            PropSO propSO = collision.GetComponent<Prop>().GetPropSO();
-            BagSystem.instance.AddProp(propSO);
-            Destroy(collision.gameObject);
+            if(!BagSystem.instance.IsHaveProp(collision.gameObject.GetComponent<Prop>().GetPropSO()))
+            {
+                PropSO propSO = collision.GetComponent<Prop>().GetPropSO();
+                BagSystem.instance.AddProp(propSO);
+                Destroy(collision.gameObject);
+            }           
         }
     }
 }

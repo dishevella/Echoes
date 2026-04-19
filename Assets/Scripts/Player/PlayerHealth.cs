@@ -5,6 +5,7 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     public static PlayerHealth instance;
 
     private bool isDead = false;
+    private CheckPoint checkPoint;
 
     private void Awake()
     {
@@ -17,6 +18,7 @@ public class PlayerHealth : MonoBehaviour,IDamageable
         {
             Die();
         }
+        if (Input.GetKeyDown(KeyCode.S)) Die();
     }
 
     public void TakeDamage(DamageInfo info)
@@ -30,5 +32,17 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     {
         isDead = true;
         gameObject.SetActive(false);
+        Invoke("Relive", 2f);
+    }
+
+    public void SetCheckPoint(CheckPoint checkPoint)
+    {
+        this.checkPoint = checkPoint;
+    }
+
+    private void Relive()
+    {
+        gameObject.SetActive(true);
+        transform.position = checkPoint.transform.position;
     }
 }
