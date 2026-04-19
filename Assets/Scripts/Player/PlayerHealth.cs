@@ -40,8 +40,8 @@ public class PlayerHealth : MonoBehaviour,IDamageable
         // ⭐ 停止玩家控制（关键）
         MovementController.instance.StopMove(2f);
 
-        // ⭐ 2秒后再复活
-        Invoke(nameof(Relive), 2f);
+        // ⭐ 1秒后再复活
+        Invoke(nameof(Relive), 1f);
     }
 
     public void SetCheckPoint(CheckPoint checkPoint)
