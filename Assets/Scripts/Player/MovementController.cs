@@ -29,6 +29,7 @@ public class MovementController : MonoBehaviour
 
     [Header("Wall Dection")]
     public PlayerWallLock wallLock;
+
     private void Awake()
     {
         instance = this;
@@ -45,7 +46,7 @@ public class MovementController : MonoBehaviour
         if (!canMove) return;
         
         moveInput = 0;
-
+        
         bool canMoveLeft = !wallLock.TouchingLeftWall || wallLock.IsGrounded;
         bool canMoveRight = !wallLock.TouchingRightWall || wallLock.IsGrounded;
 
