@@ -71,18 +71,5 @@ public class PlayerWallLock : MonoBehaviour
         }
     }
 
-    public float FilterHorizontalInput(float inputX)
-    {
-        if (isGrounded) return inputX;
-
-        
-        if (inputX < 0f && touchingLeftWall)
-            return 0f;
-
-       
-        if (inputX > 0f && touchingRightWall)
-            return 0f;
-
-        return inputX;
-    }
+   
 }
