@@ -14,7 +14,7 @@ public class PlayerHealth : MonoBehaviour,IDamageable
 
     private void Update()
     {
-        if(transform.position.y < -50f && !isDead)
+        if(transform.position.y < -30f && !isDead)
         {
             Die();
         }
@@ -32,7 +32,7 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     {
         isDead = true;
         gameObject.SetActive(false);
-        Invoke("Relive", 2f);
+        Invoke(nameof(Relive), 2f);
     }
 
     public void SetCheckPoint(CheckPoint checkPoint)
@@ -43,6 +43,7 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     private void Relive()
     {
         gameObject.SetActive(true);
+        isDead = false;
         transform.position = checkPoint.transform.position;
     }
 }
