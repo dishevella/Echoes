@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerTouch : MonoBehaviour
@@ -21,17 +22,13 @@ public class PlayerTouch : MonoBehaviour
         if (other.CompareTag("Thorn"))
         {
             Debug.Log("玩家碰到刺了！");
-
             Dead = true;
-
             if (anim != null)
             {
                 anim.SetBool("Dead", true);
             }
+            PlayerHealth.instance.Die();
 
-            // 👉 这里以后可以加：
-            // MovementController.instance.StopMove(999f);
-            // StartCoroutine(Respawn());
         }
     }
 }

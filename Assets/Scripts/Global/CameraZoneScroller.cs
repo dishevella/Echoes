@@ -7,23 +7,25 @@ public class CameraZoneScroller : MonoBehaviour
 
     [Header("Trigger Zone")]
     [Range(0.05f, 0.45f)]
-    public float sidePercent = 0.2f;   // 左右边界百分比，0.2 = 20%
+    public float sidePercent = 0.2f;
 
     [Header("Smooth Move")]
-    public float moveDuration = 0.8f;  // 相机完成一次滑动的大致时长
+    public float moveDuration = 0.8f;
     public AnimationCurve moveCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     [Header("World Bounds")]
     public float minX = 0f;
     public float maxX = 50f;
+    public float minY = -10f;
+    public float maxY = 10f;
 
     private Camera cam;
 
     private bool isMoving = false;
     private float moveTimer = 0f;
 
-    private float startX;
-    private float targetX;
+    private Vector3 startPos;
+    private Vector3 targetPos;
 
     private void Awake()
     {
@@ -34,7 +36,6 @@ public class CameraZoneScroller : MonoBehaviour
     {
         if (player == null || cam == null) return;
 
-        // 正在移动中：继续平滑运动
         if (isMoving)
         {
             UpdateCameraMove();
@@ -48,56 +49,55 @@ public class CameraZoneScroller : MonoBehaviour
     {
         Vector3 playerViewport = cam.WorldToViewportPoint(player.position);
 
-        // 玩家进右侧 20%
+        bool trigger = false;
+
+        float playerX = player.position.x;
+        float playerY = player.position.y;
+
+        float halfHeight = cam.orthographicSize;
+        float halfWidth = halfHeight * cam.aspect;
+
+        float desiredX = transform.position.x;
+        float desiredY = transform.position.y;
+
+        // ===== X轴 =====
         if (playerViewport.x >= 1f - sidePercent)
         {
-            StartMoveRight();
+            float desiredViewportX = sidePercent;
+            desiredX = playerX + halfWidth - 2f * halfWidth * desiredViewportX;
+            trigger = true;
         }
-        // 玩家进左侧 20%
         else if (playerViewport.x <= sidePercent)
         {
-            StartMoveLeft();
+            float desiredViewportX = 1f - sidePercent;
+            desiredX = playerX + halfWidth - 2f * halfWidth * desiredViewportX;
+            trigger = true;
         }
-    }
 
-    void StartMoveRight()
-    {
-        float playerX = player.position.x;
-        float cameraHalfWidth = cam.orthographicSize * cam.aspect;
+        // ===== Y轴 =====
+        if (playerViewport.y >= 1f - sidePercent)
+        {
+            float desiredViewportY = sidePercent;
+            desiredY = playerY + halfHeight - 2f * halfHeight * desiredViewportY;
+            trigger = true;
+        }
+        else if (playerViewport.y <= sidePercent)
+        {
+            float desiredViewportY = 1f - sidePercent;
+            desiredY = playerY + halfHeight - 2f * halfHeight * desiredViewportY;
+            trigger = true;
+        }
 
-        // 目标：让玩家最终落在左侧 20%
-        float desiredViewportX = sidePercent;
-        float desiredCameraX = playerX + cameraHalfWidth - 2f * cameraHalfWidth * desiredViewportX;
+        desiredX = Mathf.Clamp(desiredX, minX, maxX);
+        desiredY = Mathf.Clamp(desiredY, minY, maxY);
 
-        desiredCameraX = Mathf.Clamp(desiredCameraX, minX, maxX);
+        Vector3 newTarget = new Vector3(desiredX, desiredY, transform.position.z);
 
-        // 如果已经到头或几乎不用动，就不启动
-        if (Mathf.Abs(transform.position.x - desiredCameraX) < 0.01f)
+        if (Vector3.Distance(transform.position, newTarget) < 0.01f)
             return;
 
-        startX = transform.position.x;
-        targetX = desiredCameraX;
-        moveTimer = 0f;
-        isMoving = true;
-    }
-
-    void StartMoveLeft()
-    {
-        float playerX = player.position.x;
-        float cameraHalfWidth = cam.orthographicSize * cam.aspect;
-
-        // 目标：让玩家最终落在右侧 20%
-        float desiredViewportX = 1f - sidePercent;
-        float desiredCameraX = playerX + cameraHalfWidth - 2f * cameraHalfWidth * desiredViewportX;
-
-        desiredCameraX = Mathf.Clamp(desiredCameraX, minX, maxX);
-
-        // 如果已经到头或几乎不用动，就不启动
-        if (Mathf.Abs(transform.position.x - desiredCameraX) < 0.01f)
-            return;
-
-        startX = transform.position.x;
-        targetX = desiredCameraX;
+        startPos = transform.position;
+        targetPos = newTarget;
         moveTimer = 0f;
         isMoving = true;
     }
@@ -109,11 +109,8 @@ public class CameraZoneScroller : MonoBehaviour
         float t = Mathf.Clamp01(moveTimer / moveDuration);
         float curveT = moveCurve.Evaluate(t);
 
-        float newX = Mathf.Lerp(startX, targetX, curveT);
-
-        Vector3 pos = transform.position;
-        pos.x = newX;
-        transform.position = pos;
+        Vector3 newPos = Vector3.Lerp(startPos, targetPos, curveT);
+        transform.position = newPos;
 
         if (t >= 1f)
         {
@@ -134,18 +131,23 @@ public class CameraZoneScroller : MonoBehaviour
         float leftX = camPos.x - halfWidth;
         float rightX = camPos.x + halfWidth;
 
+        float bottomY = camPos.y - halfHeight;
+        float topY = camPos.y + halfHeight;
+
         float leftTriggerX = Mathf.Lerp(leftX, rightX, sidePercent);
         float rightTriggerX = Mathf.Lerp(leftX, rightX, 1f - sidePercent);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(
-            new Vector3(leftTriggerX, camPos.y - halfHeight, 0f),
-            new Vector3(leftTriggerX, camPos.y + halfHeight, 0f)
-        );
+        float bottomTriggerY = Mathf.Lerp(bottomY, topY, sidePercent);
+        float topTriggerY = Mathf.Lerp(bottomY, topY, 1f - sidePercent);
 
-        Gizmos.DrawLine(
-            new Vector3(rightTriggerX, camPos.y - halfHeight, 0f),
-            new Vector3(rightTriggerX, camPos.y + halfHeight, 0f)
-        );
+        Gizmos.color = Color.yellow;
+
+        // X线
+        Gizmos.DrawLine(new Vector3(leftTriggerX, bottomY, 0), new Vector3(leftTriggerX, topY, 0));
+        Gizmos.DrawLine(new Vector3(rightTriggerX, bottomY, 0), new Vector3(rightTriggerX, topY, 0));
+
+        // Y线
+        Gizmos.DrawLine(new Vector3(leftX, bottomTriggerY, 0), new Vector3(rightX, bottomTriggerY, 0));
+        Gizmos.DrawLine(new Vector3(leftX, topTriggerY, 0), new Vector3(rightX, topTriggerY, 0));
     }
 }

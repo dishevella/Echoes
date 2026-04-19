@@ -28,10 +28,19 @@ public class PlayerHealth : MonoBehaviour,IDamageable
         Die();
     }
 
-    private void Die()
+    public void Die()
     {
+        if (isDead) return;
+
         isDead = true;
-        gameObject.SetActive(false);
+
+        // ❌ 不要立刻隐藏
+        // gameObject.SetActive(false);
+
+        // ⭐ 停止玩家控制（关键）
+        MovementController.instance.StopMove(2f);
+
+        // ⭐ 2秒后再复活
         Invoke(nameof(Relive), 2f);
     }
 
@@ -43,6 +52,12 @@ public class PlayerHealth : MonoBehaviour,IDamageable
     private void Relive()
     {
         gameObject.SetActive(true);
+        // ⭐ 恢复动画状态
+        Animator anim = GetComponent<Animator>();
+        if (anim != null)
+        {
+            anim.SetBool("Dead", false);
+        }
         isDead = false;
         transform.position = checkPoint.transform.position;
     }
