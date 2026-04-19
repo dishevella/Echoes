@@ -67,16 +67,16 @@ public class MovementController : MonoBehaviour
 
         moveInput = 0;
 
-        bool canMoveLeft = !wallLock.TouchingLeftWall || wallLock.IsGrounded;
-        bool canMoveRight = !wallLock.TouchingRightWall || wallLock.IsGrounded;
+        //bool canMoveLeft = !wallLock.TouchingLeftWall || wallLock.IsGrounded;
+        //bool canMoveRight = !wallLock.TouchingRightWall || wallLock.IsGrounded;
 
-        if (Input.GetKey(KeyCode.A) && canMoveLeft)
+        if (Input.GetKey(KeyCode.A))
         {
             moveInput = -1f;
             sr.flipX = true;
         }
 
-        if (Input.GetKey(KeyCode.D) && canMoveRight)
+        if (Input.GetKey(KeyCode.D))
         {
             moveInput = 1f;
             sr.flipX = false;
@@ -201,6 +201,6 @@ public class MovementController : MonoBehaviour
         Anim.SetFloat("Speed", speed);
 
         bool grounded = IsGrounded();
-        Anim.SetBool("IsGrounded", grounded);
+        //Anim.SetBool("IsGrounded", grounded);
     }
 }
