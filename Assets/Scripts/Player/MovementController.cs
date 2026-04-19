@@ -123,24 +123,25 @@ public class MovementController : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
         }
-
-        // ===== 体力（保留你原逻辑）=====
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (staminaBar != null)
         {
-            if (staminaBar.fillAmount > 0.01f)
+            // ===== 体力（保留你原逻辑）=====
+            if (Input.GetKey(KeyCode.LeftShift))
             {
-                staminaBar.fillAmount -= consumeRate * Time.deltaTime;
+                if (staminaBar.fillAmount > 0.01f)
+                {
+                    staminaBar.fillAmount -= consumeRate * Time.deltaTime;
+                }
+                else
+                {
+                    staminaBar.fillAmount += resumeRate * Time.deltaTime;
+                }
             }
             else
             {
                 staminaBar.fillAmount += resumeRate * Time.deltaTime;
             }
         }
-        else
-        {
-            staminaBar.fillAmount += resumeRate * Time.deltaTime;
-        }
-
         // ===== 动画 =====
         UpdateAnimation();
 
