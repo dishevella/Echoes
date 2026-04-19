@@ -11,6 +11,8 @@ public class BagSystem : MonoBehaviour
     private PropSO selectedPropSO;
     private int slot = 0;
 
+    public List<GameObject> selectedSlotList = new List<GameObject>();
+
     private void Awake()
     {
         instance = this;
@@ -29,11 +31,13 @@ public class BagSystem : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Tab))
         {
             SwitchSelectedPropSO();
+            UpdateSelectedSlot();
         }
 
         if(Input.GetKeyDown(KeyCode.E) && MovementController.instance.IsGrounded())
         {
             UseProp();
+            UpdateSelectedSlot();
         }
     }
 
@@ -44,6 +48,7 @@ public class BagSystem : MonoBehaviour
         {
             slot = 0;
             selectedPropSO = propSOList[0];
+            UpdateSelectedSlot();
         }
     }
     public void RemoveProp(PropSO propSO)
@@ -53,6 +58,7 @@ public class BagSystem : MonoBehaviour
         {
             selectedPropSO = null;
             slot = 0;
+            UpdateSelectedSlot();
             return;
         }
 
@@ -83,6 +89,10 @@ public class BagSystem : MonoBehaviour
                 PlayerMinePlacer.instance.PlaceMine();
                 RemoveProp(selectedPropSO);
                 break;
+            case 1:
+                break;
+            case 2:
+                break;
             default:
                 break;
         }
@@ -106,5 +116,16 @@ public class BagSystem : MonoBehaviour
             return true;
         else 
             return false;
+    }
+
+    private void UpdateSelectedSlot()
+    {
+        if (selectedSlotList.Count == 0) return;
+
+        foreach(var mask in selectedSlotList)
+        {
+            mask.SetActive(false);
+        }
+        selectedSlotList[slot].SetActive(true);
     }
 }
