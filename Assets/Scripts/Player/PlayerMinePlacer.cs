@@ -22,7 +22,7 @@ public class PlayerMinePlacer : MonoBehaviour
     public void PlaceMine()
     {
         MovementController.instance.StopMove(placeDelay);
-        Invoke("SpawnMine", placeDelay);
+        Invoke(nameof(SpawnMine), placeDelay);
     }
 
     private void SpawnMine()
