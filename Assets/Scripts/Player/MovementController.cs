@@ -27,7 +27,7 @@ public class MovementController : MonoBehaviour
     private int currentJumpCount;
     private bool wasGrounded;
 
-    private float coyoteTimer;
+    //private float coyoteTimer;
     private float jumpBufferTimer;
 
     private bool canMove = true;
@@ -113,7 +113,7 @@ public class MovementController : MonoBehaviour
 
             currentJumpCount--;
             jumpBufferTimer = 0;
-            coyoteTimer = 0;
+            //coyoteTimer = 0;
 
             Anim.SetTrigger("Jump");
         }
