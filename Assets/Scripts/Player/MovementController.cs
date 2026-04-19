@@ -17,6 +17,11 @@ public class MovementController : MonoBehaviour
     private bool isSprint = false;
     private bool isJump = false;
 
+    [Header("Jump")]
+    public int maxJumpCount = 2;
+    private int currentJumpCount = 0;
+    private bool wasGrounded = false;
+
     [Header("GroundCheck")]
     private Transform groundCheck;
     public float groundCheckRadius = 0.2f;
@@ -62,10 +67,16 @@ public class MovementController : MonoBehaviour
             transform.localScale = new Vector3(1f, 1f, 1f);
         }
 
+        if(IsGrounded() && !wasGrounded)
+        {
+            currentJumpCount = 0;
+        }
+        wasGrounded = IsGrounded();
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        if (Input.GetKeyDown(KeyCode.Space) && currentJumpCount<maxJumpCount)
         {
             isJump = true;
+            currentJumpCount++;
         }
 
         if(Input.GetKey(KeyCode.LeftShift))
@@ -99,15 +110,12 @@ public class MovementController : MonoBehaviour
     {
         if (!canMove) return;
 
-        float speed;
-        if(!isSprint)
-            speed = moveSpeed;
-        else
-            speed = sprintSpeed;
+        float speed = isSprint ? sprintSpeed : moveSpeed;
         rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
 
         if(isJump)
         {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
             rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
             isJump = false;
         }

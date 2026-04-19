@@ -956,6 +956,7 @@ GameObject:
   - component: {fileID: 828582449}
   - component: {fileID: 828582448}
   - component: {fileID: 828582447}
+  - component: {fileID: 828582451}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1123,6 +1124,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73919f5c6d3721f4ebb4c7e44af3a6ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWallLock
+--- !u!114 &828582451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 828582443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5015a24af276d44289db3a486c881c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealthController
 --- !u!1 &1054776055
 GameObject:
   m_ObjectHideFlags: 0
