@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class MovementController : MonoBehaviour
@@ -58,6 +59,11 @@ public class MovementController : MonoBehaviour
     private Collider2D playerCollider;
     private bool isDropping = false;
 
+    [Header("Step Settings")]
+    public float stepInterval = 0.35f;
+    private float stepTimer;
+
+
     private void Awake()
     {
         instance = this;
@@ -110,6 +116,7 @@ public class MovementController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jumpBufferTimer = jumpBufferTime;
+            
         }
         else
         {
@@ -127,13 +134,13 @@ public class MovementController : MonoBehaviour
             //coyoteTimer = 0;
 
             Anim.SetTrigger("Jump");
+            PlayAudio.instance.PlayJump();
         }
 
         // ===== 短跳（松开变矮）=====
         if (Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity.y > 0)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
-            
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);            
         }
         if (staminaBar != null)
         {
@@ -180,6 +187,21 @@ public class MovementController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             TryDropDown();
+        }
+
+        if (IsMove() && IsGrounded())
+        {
+            stepTimer -= Time.deltaTime;
+
+            if (stepTimer <= 0f)
+            {
+                PlayAudio.instance.PlayWalk();
+                stepTimer = stepInterval;
+            }
+        }
+        else
+        {
+            stepTimer = 0f;
         }
     }
 
