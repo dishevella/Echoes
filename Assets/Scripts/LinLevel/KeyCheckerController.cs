@@ -17,8 +17,8 @@ public class KeyCheckerController : MonoBehaviour
         currentKey++;
         if(currentKey==3)
         {
-            Debug.Log("Success");
             movingPlateform.isStart = true;
+            PlayAudio.instance.PlayPuzzleTrigger();
         }
     }
 }

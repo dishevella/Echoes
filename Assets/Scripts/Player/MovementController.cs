@@ -231,7 +231,7 @@ public class MovementController : MonoBehaviour
                 Destroy(collision.gameObject);
                 PlayAudio.instance.PlayPickup();
             }
-            
+         
         }
     }
 

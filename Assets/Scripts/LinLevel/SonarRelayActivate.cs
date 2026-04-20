@@ -13,6 +13,7 @@ public class SonarRelayActivate : MonoBehaviour
     public void Interact()
     {
         Instantiate(sonarRelay, spawnPos, Quaternion.identity);
+        PlayAudio.instance.PlayFire();
         Destroy(gameObject);
     }
 }

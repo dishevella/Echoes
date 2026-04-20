@@ -43,6 +43,7 @@ public class DoorTrigger : MonoBehaviour
         {
             isOpen = true;
             isClose = false;
+            PlayAudio.instance.PlayStone();
         }
     }
 
@@ -52,6 +53,7 @@ public class DoorTrigger : MonoBehaviour
         {
             isOpen = false;
             isClose = true;
+            PlayAudio.instance.PlayStone();
         }
     }
 

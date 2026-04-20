@@ -63,6 +63,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         if (isDead) return;
 
         isDead = true;
+        PlayAudio.instance.PlayDeath();
 
         if (MovementController.instance != null)
         {

@@ -387,6 +387,12 @@ MonoBehaviour:
   walk1: {fileID: 8300000, guid: 956a4eda311bdac40b712eb6667ef1b5, type: 3}
   walk2: {fileID: 8300000, guid: 81c03ca9a81a0674c9e738f775e2057e, type: 3}
   pickup: {fileID: 8300000, guid: 9dbe6088f543c5b489379a007008907f, type: 3}
+  stone: {fileID: 8300000, guid: a9ccfc3077ffa614aac43361de7712de, type: 3}
+  lighting: {fileID: 8300000, guid: e9a55057849ff6b429d1872c956748e4, type: 3}
+  openBox: {fileID: 8300000, guid: 665b470f459e3554e98f11ebe3e7fc98, type: 3}
+  fire: {fileID: 8300000, guid: c38f7445f16537d41a7ea1e835d11a41, type: 3}
+  death: {fileID: 8300000, guid: 4594592df9323fd4e94866080fb726ee, type: 3}
+  puzzleTrigger: {fileID: 8300000, guid: d6c5f6b8e11d80d4b9d8750d9b49563c, type: 3}
 --- !u!212 &9216011102412416432
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -554,7 +560,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MovementController
   Anim: {fileID: 7242890928457197558}
   moveSpeed: 8
-  jumpVelocity: 10
+  jumpVelocity: 12
   gravity: -40
   maxFallSpeed: -20
   coyoteTime: 0.1
@@ -563,7 +569,7 @@ MonoBehaviour:
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8256
+    m_Bits: 8384
   staminaBar: {fileID: 0}
   consumeRate: 10
   resumeRate: 5
