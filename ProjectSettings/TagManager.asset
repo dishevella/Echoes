@@ -9,24 +9,32 @@ TagManager:
   - MovingPlatform
   - Enemy
   - Faded
+  - Prop
+  - Thorn
+  - Die
+  - Relay
+  - Interactive
+  - Stair
+  - Puzzle
+  - EnemyIgnoreWall
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Enemy
   - Water
   - UI
+  - Ground
+  - Stable
+  - Dynamic
+  - Visible
+  - Ignore
   - 
   - 
+  - Stair
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - EnemyWall
   - 
   - 
   - 

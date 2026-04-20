@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4231f37556e42ae43ab39ec1cdc06957, type: 3}
+  m_Name: MineSO
+  m_EditorClassIdentifier: Assembly-CSharp::PropSO
+  prefab: {fileID: 204850209627226756, guid: 6492e7e8ff4d9dc4b9ae44e9bef4a8a4, type: 3}
+  image: {fileID: 0}
+  propName: "\u70B8\u5F39"
