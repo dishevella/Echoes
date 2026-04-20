@@ -10,6 +10,7 @@ public class PlayAudio : MonoBehaviour
     public AudioClip jump;
     public AudioClip walk1;
     public AudioClip walk2;
+    public AudioClip pickup;
 
     private void Awake()
     {
@@ -31,5 +32,9 @@ public class PlayAudio : MonoBehaviour
         {
             As.PlayOneShot(walk2);
         }
+    }
+    public void PlayPickup()
+    {
+        As.PlayOneShot(pickup);
     }
 }
