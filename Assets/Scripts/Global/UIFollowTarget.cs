@@ -7,11 +7,13 @@ public class UIFollowTarget : MonoBehaviour
 
     private RectTransform rect;
     private Canvas canvas;
+    private RectTransform canvasRect;
 
     void Awake()
     {
         rect = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
+        canvasRect = canvas.GetComponent<RectTransform>();
     }
 
     void LateUpdate()
@@ -20,16 +22,9 @@ public class UIFollowTarget : MonoBehaviour
 
         Vector3 worldPos = target.position + worldOffset;
 
-        // 世界 → 屏幕
-        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(
-            Camera.main,
-            worldPos
-        );
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, worldPos);
 
-        // 屏幕 → UI坐标（关键！防止分辨率错位）
         Vector2 localPoint;
-        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
-
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvasRect,
             screenPoint,
@@ -37,6 +32,6 @@ public class UIFollowTarget : MonoBehaviour
             out localPoint
         );
 
-        rect.localPosition = localPoint;
+        rect.anchoredPosition = localPoint;   // 关键：不要用 localPosition
     }
 }
