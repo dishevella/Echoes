@@ -15,7 +15,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public float fadeDuration = 1f;
 
     private bool isDead = false;
-    private CheckPoint checkPoint;
+    public CheckPoint checkPoint;
 
     private SpriteRenderer[] spriteRenderers;
     private Collider2D[] colliders2D;
@@ -47,11 +47,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     private void Update()
     {
         if (transform.position.y < deathY && !isDead)
-        {
-            Die();
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
         {
             Die();
         }
