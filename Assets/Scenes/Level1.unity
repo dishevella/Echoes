@@ -1420,6 +1420,10 @@ MonoBehaviour:
     m_RotationOrder: 4
   minX: 0
   maxX: 13.87
+  minY: -10
+  maxY: 10
+  lockCamera: 0
+  lockedPosition: {fileID: 0}
 --- !u!1 &505820739
 GameObject:
   m_ObjectHideFlags: 0
@@ -2032,6 +2036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
   pauseUI: {fileID: 1517399716}
+  backSceneName: StartMenu
 --- !u!1 &772075030
 GameObject:
   m_ObjectHideFlags: 0
@@ -2636,6 +2641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90cdd91285ab97640a9290a9a427a15a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleScaler
+  target: {fileID: 0}
   originalScale: {x: 0.1069719, y: 0.08485844, z: 0.07549006}
   sonarSpeed: 0.3
   repairSpeed: 0.3
@@ -2711,24 +2717,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e4bfc6dd31138144b82fd205061ca8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GhostController
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  targetTagList:
-  - Enemy
-  - MovingPlatform
-  targetCooldown: 1
-  ghostLifetime: 5
-  startAlpha: 0.7
-  maxGhostCount: 50
-  disableRigidbody2D: 1
-  disableCollider2D: 1
-  disableAnimator: 1
-  disableComponentNames:
-  - PatrolEnemyController
-  - EnemyHealth
-  - MovingPlatform
-  - HideableTarget
 --- !u!58 &962196929
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -3206,9 +3194,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69a9c0dcddee24044823bf78c9844e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementController
+  Anim: {fileID: 0}
   moveSpeed: 10
-  sprintSpeed: 15
-  jumpSpeed: 10
+  jumpVelocity: 16
+  gravity: -40
+  maxFallSpeed: -20
+  coyoteTime: 0.1
+  jumpBufferTime: 0.1
+  maxJumpCount: 2
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
@@ -3217,6 +3210,12 @@ MonoBehaviour:
   consumeRate: 10
   resumeRate: 5
   wallLock: {fileID: 1008623931}
+  currentInteractiveObject: {fileID: 0}
+  dropDownTime: 0.3
+  dropLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  stepInterval: 0.35
 --- !u!114 &1008623930
 MonoBehaviour:
   m_ObjectHideFlags: 0
