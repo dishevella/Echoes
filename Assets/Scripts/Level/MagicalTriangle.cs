@@ -24,7 +24,7 @@ public class MagicalTriangle : MonoBehaviour
                 if (rb!= null)
                 {
                     Debug.Log("地刺掉落触发！");
-                    rb.gravityScale = 1f;
+                    rb.gravityScale = 0.5f;
                 }
             }
 
