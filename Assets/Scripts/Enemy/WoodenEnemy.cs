@@ -14,21 +14,21 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
 
     [Header("Ground Check")]
     public Transform groundCheck;
-    public float groundCheckRadius = 0.15f;
+    public float groundCheckRadius = 0.3f;
     public LayerMask groundLayer;
 
     [Header("Wall Check")]
     public Transform wallCheck;
     public float wallCheckDistance = 0.2f;
+    public LayerMask wallLayer;
 
     [Header("Gap Check")]
     public Transform edgeCheck;
-    public float edgeCheckDistance = 0.5f;
+    public float edgeCheckDistance = 1f;
 
     [Header("Jump Logic")]
     public float jumpCooldown = 0.4f;
-    public float playerHigherThreshold = 0.8f;
-    public float gapJumpThreshold = 2.5f;
+    public float playerHigherThreshold = 0.2f;
 
     private Rigidbody2D rb;
     private float freezeTimer = 0f;
@@ -53,24 +53,19 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
         freezeTimer = freezeTime;
     }
 
-    private void Update()
-    {
-        if (isDead) return;
-
-        CheckEnvironment();
-
-        if (jumpCooldownTimer > 0f)
-        {
-            jumpCooldownTimer -= Time.deltaTime;
-        }
-    }
-
     private void FixedUpdate()
     {
         if (isDead)
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             return;
+        }
+
+        CheckEnvironment();
+
+        if (jumpCooldownTimer > 0f)
+        {
+            jumpCooldownTimer -= Time.fixedDeltaTime;
         }
 
         if (freezeTimer > 0f)
@@ -107,8 +102,6 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
 
         rb.linearVelocity = new Vector2(dirX * moveSpeed, rb.linearVelocity.y);
 
-        Debug.Log($"Grounded:{isGrounded} Wall:{isWallAhead} Gap:{isGapAhead} deltaY:{deltaY} cooldown:{jumpCooldownTimer}");
-
         if (!isGrounded) return;
         if (jumpCooldownTimer > 0f) return;
 
@@ -119,7 +112,7 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
             return;
         }
 
-        if (isGapAhead && Mathf.Abs(deltaX) <= gapJumpThreshold)
+        if (isGapAhead)
         {
             Debug.Log("Jump because gap");
             Jump();
@@ -136,6 +129,7 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
 
     private void Jump()
     {
+        Debug.Log("JUMP EXECUTED");
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         jumpCooldownTimer = jumpCooldown;
     }
@@ -151,7 +145,6 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
             );
 
             isGrounded = groundHit != null;
-
             Debug.Log("Ground Hit = " + (groundHit != null ? groundHit.name : "NONE"));
         }
         else
@@ -167,7 +160,7 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
                 wallCheck.position,
                 faceDir,
                 wallCheckDistance,
-                groundLayer
+                wallLayer
             );
 
             isWallAhead = wallHit.collider != null;

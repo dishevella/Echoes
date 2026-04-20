@@ -20,6 +20,10 @@ public class DashEnemy : MonoBehaviour, ISonarScannable
     [Header("Target")]
     public Transform player;
 
+    [Header("Animation")]
+    public Animator animator;
+    public SpriteRenderer sr;
+
     private Rigidbody2D rb;
 
     private bool isCharging = false;
@@ -35,6 +39,12 @@ public class DashEnemy : MonoBehaviour, ISonarScannable
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        if (animator == null)
+            animator = GetComponent<Animator>();
+
+        if (sr == null)
+            sr = GetComponent<SpriteRenderer>();
     }
 
     public void OnSonarScanned()
@@ -46,7 +56,6 @@ public class DashEnemy : MonoBehaviour, ISonarScannable
 
         Vector2 dir = player.position - transform.position;
 
-        // 如果两个都勾上，这里我设定为优先水平冲刺
         if (horizontalOnlyDash)
         {
             float dirX = dir.x >= 0f ? 1f : -1f;
@@ -70,6 +79,8 @@ public class DashEnemy : MonoBehaviour, ISonarScannable
         {
             hasTriggered = true;
         }
+
+        UpdateDashAnimationDirection(dashDirection);
     }
 
     private void FixedUpdate()
@@ -83,12 +94,23 @@ public class DashEnemy : MonoBehaviour, ISonarScannable
         {
             rb.linearVelocity = Vector2.zero;
 
+            if (animator != null)
+            {
+                animator.SetBool("Dash", false);
+            }
+
             chargeTimer -= Time.fixedDeltaTime;
+
             if (chargeTimer <= 0f)
             {
                 isCharging = false;
                 isDashing = true;
                 dashTimer = dashTime;
+
+                if (animator != null)
+                {
+                    animator.SetBool("Dash", true);
+                }
             }
 
             return;
@@ -99,15 +121,44 @@ public class DashEnemy : MonoBehaviour, ISonarScannable
             rb.linearVelocity = dashDirection * dashSpeed;
 
             dashTimer -= Time.fixedDeltaTime;
+
             if (dashTimer <= 0f)
             {
                 isDashing = false;
                 rb.linearVelocity = Vector2.zero;
+
+                if (animator != null)
+                {
+                    animator.SetBool("Dash", false);
+                }
             }
 
             return;
         }
 
         rb.linearVelocity = Vector2.zero;
+
+        if (animator != null)
+        {
+            animator.SetBool("Dash", false);
+        }
+    }
+
+    private void UpdateDashAnimationDirection(Vector2 dir)
+    {
+        if (animator != null)
+        {
+            animator.SetFloat("DashX", dir.x);
+            animator.SetFloat("DashY", dir.y);
+        }
+
+        // 如果你现在只有左右两套图，先用翻转处理水平朝向
+        if (sr != null)
+        {
+            if (Mathf.Abs(dir.x) > 0.01f)
+            {
+                sr.flipX = dir.x < 0f;
+            }
+        }
     }
 }
