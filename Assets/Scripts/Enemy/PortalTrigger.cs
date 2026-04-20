@@ -10,6 +10,7 @@ public class PortalTrigger : MonoBehaviour
     public bool triggerOnce = true;
 
     private bool hasTriggered = false;
+    public GameObject fire;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -19,7 +20,7 @@ public class PortalTrigger : MonoBehaviour
 
         portalActivator.ActivateTrigger(triggerID);
         hasTriggered = true;
-
+        fire.SetActive(true);
         Debug.Log("Trigger " + triggerID + " activated.");
     }
 }

@@ -40,9 +40,6 @@ public class DashEnemy : MonoBehaviour, ISonarScannable
     {
         rb = GetComponent<Rigidbody2D>();
 
-        if (animator == null)
-            animator = GetComponent<Animator>();
-
         if (sr == null)
             sr = GetComponent<SpriteRenderer>();
     }
@@ -78,6 +75,7 @@ public class DashEnemy : MonoBehaviour, ISonarScannable
         if (oneTimeTrigger)
         {
             hasTriggered = true;
+            
         }
 
         UpdateDashAnimationDirection(dashDirection);
@@ -113,6 +111,7 @@ public class DashEnemy : MonoBehaviour, ISonarScannable
                 }
             }
 
+           
             return;
         }
 
@@ -131,8 +130,13 @@ public class DashEnemy : MonoBehaviour, ISonarScannable
                 {
                     animator.SetBool("Dash", false);
                 }
+                if (oneTimeTrigger)
+                {
+                    hasTriggered = true;
+                    gameObject.SetActive(false);
+                }
             }
-
+           
             return;
         }
 
