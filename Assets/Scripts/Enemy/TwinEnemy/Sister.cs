@@ -37,6 +37,9 @@ public class Sister : MonoBehaviour, ISonarScannable
     [Header("Ignore Specific Wall")]
     public Collider2D ignoredWall;
 
+    [Header("Animation")]
+    public Animator animator;
+
     private Rigidbody2D rb;
     private bool isDead = false;
     private bool canMove = false;
@@ -55,6 +58,9 @@ public class Sister : MonoBehaviour, ISonarScannable
     {
         rb = GetComponent<Rigidbody2D>();
         selfCollider = GetComponent<Collider2D>();
+
+        if (animator == null)
+            animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -78,6 +84,7 @@ public class Sister : MonoBehaviour, ISonarScannable
         if (isDead)
         {
             rb.linearVelocity = Vector2.zero;
+            SetMoveAnimation(false, 0f);
             return;
         }
 
@@ -96,23 +103,27 @@ public class Sister : MonoBehaviour, ISonarScannable
         if (manager == null || player == null)
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            SetMoveAnimation(false, 0f);
             return;
         }
 
         if (!canMove)
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            SetMoveAnimation(false, 0f);
             return;
         }
 
         if (manager.SisScanned)
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            SetMoveAnimation(false, 0f);
             return;
         }
 
         if (TryTeleportToNearestPoint())
         {
+            SetMoveAnimation(false, 0f);
             return;
         }
 
@@ -162,6 +173,8 @@ public class Sister : MonoBehaviour, ISonarScannable
         else if (dirX < 0f && facingRight) Flip(false);
 
         rb.linearVelocity = new Vector2(dirX * speed, rb.linearVelocity.y);
+
+        SetMoveAnimation(Mathf.Abs(dirX) > 0.01f, dirX);
 
         if (!isGrounded) return;
         if (jumpCooldownTimer > 0f) return;
@@ -237,9 +250,22 @@ public class Sister : MonoBehaviour, ISonarScannable
     private void Flip(bool faceRight)
     {
         facingRight = faceRight;
+
         Vector3 scale = transform.localScale;
         scale.x = Mathf.Abs(scale.x) * (facingRight ? 1f : -1f);
         transform.localScale = scale;
+    }
+
+    private void SetMoveAnimation(bool isMoving, float dirX)
+    {
+        if (animator == null) return;
+
+        animator.SetBool("Move", isMoving);
+
+        if (Mathf.Abs(dirX) > 0.01f)
+        {
+            animator.SetFloat("FaceX", dirX > 0f ? 1f : -1f);
+        }
     }
 
     public void StartMoving()
@@ -252,6 +278,7 @@ public class Sister : MonoBehaviour, ISonarScannable
     {
         canMove = false;
         rb.linearVelocity = Vector2.zero;
+        SetMoveAnimation(false, 0f);
     }
 
     public void Die()
@@ -260,6 +287,7 @@ public class Sister : MonoBehaviour, ISonarScannable
         isDead = true;
         canMove = false;
         rb.linearVelocity = Vector2.zero;
+        SetMoveAnimation(false, 0f);
         gameObject.SetActive(false);
     }
 }
