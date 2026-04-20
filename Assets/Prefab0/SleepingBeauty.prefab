@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4b450b1166e47d45a9df3531ee2bb71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SleepingBeauty
-  anim: {fileID: 0}
+  anim: {fileID: 1260683148038851975}
   moveSpeed: 4
   startMoveRight: 1
   leftWallCheck: {fileID: 1679118652876364321}
