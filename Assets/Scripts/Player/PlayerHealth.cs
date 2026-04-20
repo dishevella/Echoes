@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
@@ -157,6 +158,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         if (checkPoint != null)
         {
             transform.position = checkPoint.transform.position;
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         // 恢复刚体
