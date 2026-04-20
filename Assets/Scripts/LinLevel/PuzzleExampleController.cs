@@ -13,6 +13,9 @@ public class PuzzleExample
 public class PuzzleExampleController : MonoBehaviour
 {
     public static PuzzleExampleController instance;
+
+    public GameObject darkForm;
+    public GameObject lightForm;
     
     public int[] numbers;
     private bool isPass = false;
@@ -57,6 +60,7 @@ public class PuzzleExampleController : MonoBehaviour
             {
                 isPass = true;
                 isOpen = true;
+                puzzleDoor.gameObject.SetActive(false);
             }
         }
 
@@ -71,14 +75,14 @@ public class PuzzleExampleController : MonoBehaviour
         ShowPuzzleExample();
         puzzleDoor.gameObject.SetActive(true);
         puzzleDoor.Close();
+        darkForm.SetActive(false);
+        lightForm.SetActive(true);
     }
 
     private void ShowPuzzleExample()
     {
         if (!isTrigger)
-        {
-            isTrigger = true;
-
+        {            
             numbers = new int[] { 0, 1, 2, 3, 4, 5 };
             numbers = numbers.OrderBy(x => UnityEngine.Random.Range(0, 100)).ToArray();
 
@@ -105,18 +109,21 @@ public class PuzzleExampleController : MonoBehaviour
             lightForm.SetActive(true);
             yield return new WaitForSeconds(1f);
         }
+        isTrigger = true;
     }
 
     public void HideExample()
     {
         foreach(var example in puzzleExamples)
         {
-            GameObject darkForm = example.puzzleObject.transform.Find("CrystalLampDark").gameObject;
-            GameObject lightForm = example.puzzleObject.transform.Find("CrystalLampLight").gameObject;
+            GameObject darkForm = example.puzzleObject.GetComponent<PuzzleTrigger>().darkForm;
+            GameObject lightForm = example.puzzleObject.GetComponent<PuzzleTrigger>().lightForm;
 
             darkForm.SetActive(true);
             lightForm.SetActive(false);
         }
+        darkForm.SetActive(true);
+        lightForm.SetActive(false);
         isTrigger = false;
     }
 }

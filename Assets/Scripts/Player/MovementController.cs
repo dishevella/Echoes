@@ -46,7 +46,7 @@ public class MovementController : MonoBehaviour
     [Header("Wall Dection")]
     public PlayerWallLock wallLock;
 
-    private GameObject currentInteractiveObject;
+    public GameObject currentInteractiveObject;
 
     private void Awake()
     {
@@ -145,17 +145,17 @@ public class MovementController : MonoBehaviour
         // ===== 动画 =====
         UpdateAnimation();
 
-        if (Input.GetKeyDown(KeyCode.F) && currentInteractiveObject!=null)
+        if(Input.GetKeyDown(KeyCode.F) && currentInteractiveObject!=null)
         {
-            if (currentInteractiveObject.TryGetComponent<PuzzleExampleController>(out var puzzleExampleController))
+            if(currentInteractiveObject.TryGetComponent<PuzzleExampleController>(out var puzzleExampleController))
             {
                 puzzleExampleController.Interact();
             }
             else if (currentInteractiveObject.TryGetComponent<PuzzleTrigger>(out var puzzleTrigger))
             {
-                puzzleTrigger.Interact();
+               puzzleTrigger.Interact();
             }
-            else if(currentInteractiveObject.TryGetComponent<KeyChecker>(out var keyChecker))
+            else if (currentInteractiveObject.TryGetComponent<KeyChecker>(out var keyChecker))
             {
                 keyChecker.Interact();
             }
@@ -210,14 +210,23 @@ public class MovementController : MonoBehaviour
                 BagSystem.instance.AddProp(propSO);
                 Destroy(collision.gameObject);
             }
-        }       
+            
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Interactive"))
         {
-            currentInteractiveObject = collision.gameObject;         
+            currentInteractiveObject = collision.gameObject;
+            if(currentInteractiveObject.TryGetComponent<PuzzleTrigger>(out var puzzleTrigger))
+            {
+                puzzleTrigger.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 100);
+            }
+            else if (currentInteractiveObject.TryGetComponent<PuzzleExampleController>(out var puzzleExampleController))
+            {
+                puzzleExampleController.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 200);
+            }
         }
     }
 
@@ -228,7 +237,16 @@ public class MovementController : MonoBehaviour
             if (currentInteractiveObject == collision.gameObject)
             {
                 currentInteractiveObject = null;
-            }           
+            }
+
+            if (collision.TryGetComponent<PuzzleTrigger>(out var puzzleTrigger))
+            {
+                puzzleTrigger.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+            }
+            else if (collision.TryGetComponent<PuzzleExampleController>(out var puzzleExampleController))
+            {
+                puzzleExampleController.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+            }
         }
     }
 

@@ -8,6 +8,7 @@ public class KeyChecker : MonoBehaviour
     {
         if(BagSystem.instance.GetSelectedProp()==matchedKeySO)
         {
+            Debug.Log("Match");
             KeyCheckerController.instance.MatchKey();
             BagSystem.instance.UseProp();
         }
