@@ -192,6 +192,45 @@ public class MovementController : MonoBehaviour
                 BagSystem.instance.AddProp(propSO);
                 Destroy(collision.gameObject);
             }
+<<<<<<< Updated upstream
+=======
+        }       
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Interactive"))
+        {
+            currentInteractiveObject = collision.gameObject;  
+            if(currentInteractiveObject.TryGetComponent<PuzzleTrigger>(out var puzzleTrigger))
+            {
+                puzzleTrigger.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 100);
+            }
+            else if(currentInteractiveObject.TryGetComponent<PuzzleExampleController>(out var puzzleExampleController))
+            {
+                puzzleExampleController.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 150);
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Interactive"))
+        {
+            if (currentInteractiveObject == collision.gameObject)
+            {
+                currentInteractiveObject = null;
+            }
+
+            if (collision.TryGetComponent<PuzzleTrigger>(out var puzzleTrigger))
+            {
+                puzzleTrigger.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+            }
+            else if (collision.TryGetComponent<PuzzleExampleController>(out var puzzleExampleController))
+            {
+                puzzleExampleController.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+            }
+>>>>>>> Stashed changes
         }
     }
 

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class CameraZoneScroller : MonoBehaviour
 {
+    public static CameraZoneScroller instance;
+    
     [Header("Target")]
     public Transform player;
 
@@ -19,6 +21,11 @@ public class CameraZoneScroller : MonoBehaviour
     public float minY = -10f;
     public float maxY = 10f;
 
+    [Header("Lock Camera")]
+    public bool lockCamera = false;
+    private float lockTimer = 0;
+    public Transform lockedPosition;
+
     private Camera cam;
 
     private bool isMoving = false;
@@ -29,12 +36,35 @@ public class CameraZoneScroller : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
         cam = GetComponent<Camera>();
     }
 
     private void Update()
     {
         if (player == null || cam == null) return;
+
+        if (lockCamera)
+        {
+            Vector3 target = new Vector3(
+                lockedPosition.position.x,
+                lockedPosition.position.y,
+                transform.position.z
+            );
+
+            transform.position = Vector3.Lerp(
+                transform.position,
+                target,
+                Time.deltaTime * 5f
+            );
+
+            lockTimer -= Time.deltaTime;
+            if (lockTimer <= 0f)
+            {
+                lockCamera = false;
+            }
+            return;
+        }
 
         if (isMoving)
         {
@@ -94,6 +124,13 @@ public class CameraZoneScroller : MonoBehaviour
         targetPos = newTarget;
         moveTimer = 0f;
         isMoving = true;
+    }
+
+    public void LockCameraForSeconds(float seconds)
+    {
+        lockCamera = true;
+        lockTimer = seconds;
+        isMoving = false;
     }
 
     void UpdateCameraMove()

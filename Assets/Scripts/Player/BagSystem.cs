@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BagSystem : MonoBehaviour
 {
@@ -8,10 +9,10 @@ public class BagSystem : MonoBehaviour
     public List<PropSO> propSOList = new List<PropSO>();
     public List<PropSO> exampleSOList = new List<PropSO>();
 
-    private PropSO selectedPropSO;
+    public PropSO selectedPropSO;
     private int slot = 0;
 
-    public List<GameObject> selectedSlotList = new List<GameObject>();
+    public List<Image> selectedSlotList = new List<Image>();
 
     private void Awake()
     {
@@ -50,6 +51,8 @@ public class BagSystem : MonoBehaviour
             selectedPropSO = propSOList[0];
             UpdateSelectedSlot();
         }
+        selectedSlotList[slot].sprite = propSO.image;
+        selectedSlotList[slot].color = Color.white;
     }
     public void RemoveProp(PropSO propSO)
     {
@@ -86,12 +89,17 @@ public class BagSystem : MonoBehaviour
         switch(FindIndex())
         {
             case 0:
-                PlayerMinePlacer.instance.PlaceMine();
                 RemoveProp(selectedPropSO);
                 break;
             case 1:
+                RemoveProp(selectedPropSO);
                 break;
             case 2:
+                RemoveProp(selectedPropSO);
+                break;
+            case 3:
+                PlayerMinePlacer.instance.PlaceMine();
+                RemoveProp(selectedPropSO);
                 break;
             default:
                 break;
@@ -122,10 +130,11 @@ public class BagSystem : MonoBehaviour
     {
         if (selectedSlotList.Count == 0) return;
 
-        foreach(var mask in selectedSlotList)
-        {
-            mask.SetActive(false);
-        }
-        selectedSlotList[slot].SetActive(true);
+        
+    }
+
+    public PropSO GetSelectedProp()
+    {
+        return selectedPropSO;
     }
 }
