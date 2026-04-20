@@ -137,30 +137,7 @@ public class MovementController : MonoBehaviour
             PlayAudio.instance.PlayJump();
         }
 
-        // ===== 短跳（松开变矮）=====
-        if (Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity.y > 0)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);            
-        }
-        if (staminaBar != null)
-        {
-            // ===== 体力（保留你原逻辑）=====
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                if (staminaBar.fillAmount > 0.01f)
-                {
-                    staminaBar.fillAmount -= consumeRate * Time.deltaTime;
-                }
-                else
-                {
-                    staminaBar.fillAmount += resumeRate * Time.deltaTime;
-                }
-            }
-            else
-            {
-                staminaBar.fillAmount += resumeRate * Time.deltaTime;
-            }
-        }
+
         // ===== 动画 =====
         UpdateAnimation();
 
@@ -252,6 +229,7 @@ public class MovementController : MonoBehaviour
                 PropSO propSO = collision.GetComponent<Prop>().GetPropSO();
                 BagSystem.instance.AddProp(propSO);
                 Destroy(collision.gameObject);
+                PlayAudio.instance.PlayPickup();
             }
             
         }
