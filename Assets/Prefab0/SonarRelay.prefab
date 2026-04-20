@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 1486802751625860643}
   - component: {fileID: 473833036319448923}
   - component: {fileID: 5905478121695999875}
+  - component: {fileID: 463916290103510495}
   m_Layer: 9
   m_Name: SonarRelay
   m_TagString: Relay
@@ -349,8 +350,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SignalRelay
   relayScanCollider: {fileID: 447245637244350145}
   relayVisualMask: {fileID: 4734464817599414000}
-  pulseDuration: 3
-  visualStartScale: 0.2
+  relaySpriteMask: {fileID: 171931178267685007}
+  pulseDuration: 100000000
+  visualStartScale: 3
   relayCooldown: 1
   relayLayer:
     serializedVersion: 2
@@ -440,3 +442,16 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1.8832636}
   m_EdgeRadius: 0
+--- !u!114 &463916290103510495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3892739115155444061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7f19ed9ff356048ad2672bcadadf8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SonarRelayActivate
+  sonarRelay: {fileID: 0}

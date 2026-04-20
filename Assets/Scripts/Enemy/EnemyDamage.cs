@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class EnemyDamage : MonoBehaviour
 {
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
 
-        IDamageable damageable = collision.GetComponent<IDamageable>();
+        IDamageable damageable = collision.collider.GetComponent<IDamageable>();
         if (damageable == null) return;
         DamageInfo info = new DamageInfo
         {

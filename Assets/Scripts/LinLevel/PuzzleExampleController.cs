@@ -61,6 +61,7 @@ public class PuzzleExampleController : MonoBehaviour
                 isPass = true;
                 isOpen = true;
                 puzzleDoor.gameObject.SetActive(false);
+                Invoke(nameof(HideSuccessDoor), 0.5f);
             }
         }
 
@@ -126,5 +127,19 @@ public class PuzzleExampleController : MonoBehaviour
         darkForm.SetActive(true);
         lightForm.SetActive(false);
         isTrigger = false;
+    }
+
+    public void HidePuzzleDoorAfterDelay(float time)
+    {
+        Invoke(nameof(HidePuzzleDoor), time);
+    }
+    private void HidePuzzleDoor()
+    {
+        puzzleDoor.gameObject.SetActive(false);
+    }
+
+    public void HideSuccessDoor()
+    {
+        door.SetActive(false);
     }
 }

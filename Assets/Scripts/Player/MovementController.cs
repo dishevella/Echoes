@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,7 +47,16 @@ public class MovementController : MonoBehaviour
     [Header("Wall Dection")]
     public PlayerWallLock wallLock;
 
+    [Header("Interaction")]
     public GameObject currentInteractiveObject;
+
+    [Header("Push Box")]
+    public LayerMask boxLayer;
+
+    [Header("Drop")]
+    public float dropDownTime = 0.3f;
+    private Collider2D playerCollider;
+    private bool isDropping = false;
 
     private void Awake()
     {
@@ -57,6 +67,7 @@ public class MovementController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        playerCollider = GetComponent<Collider2D>();
         groundCheck = transform.Find("GroundCheck");
 
         currentJumpCount = maxJumpCount;
@@ -69,16 +80,16 @@ public class MovementController : MonoBehaviour
 
         moveInput = 0;
 
-        //bool canMoveLeft = !wallLock.TouchingLeftWall || wallLock.IsGrounded;
-        //bool canMoveRight = !wallLock.TouchingRightWall || wallLock.IsGrounded;
+        bool canMoveLeft = !wallLock.TouchingLeftWall || wallLock.IsGrounded;
+        bool canMoveRight = !wallLock.TouchingRightWall || wallLock.IsGrounded;
 
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) && canMoveLeft)
         {
             moveInput = -1f;
             sr.flipX = true;
         }
 
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D) && canMoveRight)
         {
             moveInput = 1f;
             sr.flipX = false;
@@ -122,6 +133,7 @@ public class MovementController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space) && rb.linearVelocity.y > 0)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+            
         }
         if (staminaBar != null)
         {
@@ -159,6 +171,15 @@ public class MovementController : MonoBehaviour
             {
                 keyChecker.Interact();
             }
+            else if (currentInteractiveObject.TryGetComponent<SonarRelayActivate>(out var sonarRelayActivate))
+            {
+                sonarRelayActivate.Interact();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            TryDropDown();
         }
     }
 
@@ -219,7 +240,7 @@ public class MovementController : MonoBehaviour
         if (collision.gameObject.CompareTag("Interactive"))
         {
             currentInteractiveObject = collision.gameObject;
-            if(currentInteractiveObject.TryGetComponent<PuzzleTrigger>(out var puzzleTrigger))
+            if (currentInteractiveObject.TryGetComponent<PuzzleTrigger>(out var puzzleTrigger))
             {
                 puzzleTrigger.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 100);
             }
@@ -227,10 +248,19 @@ public class MovementController : MonoBehaviour
             {
                 puzzleExampleController.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 200);
             }
-            else if(currentInteractiveObject.TryGetComponent<KeyChecker>(out var keyChecker))
+            else if (currentInteractiveObject.TryGetComponent<KeyChecker>(out var keyChecker))
             {
                 keyChecker.close.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 100);
             }
+            else if(currentInteractiveObject.TryGetComponent<SonarRelayActivate>(out var sonarRelayActivate))
+            {
+                sonarRelayActivate.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 150);
+            }
+            
+        }
+        if (collision.gameObject.CompareTag("Moveable"))
+        {
+            Anim.SetBool("IsPush", true);
         }
     }
 
@@ -251,6 +281,18 @@ public class MovementController : MonoBehaviour
             {
                 puzzleExampleController.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
             }
+            else if (collision.TryGetComponent<KeyChecker>(out var keyChecker))
+            {
+                keyChecker.close.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+            }
+            else if (collision.TryGetComponent<SonarRelayActivate>(out var sonarRelayActivate))
+            {
+                sonarRelayActivate.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 255);
+            }
+        }
+        if (collision.gameObject.CompareTag("Moveable"))
+        {
+            Anim.SetBool("IsPush", false);
         }
     }
 
@@ -262,5 +304,43 @@ public class MovementController : MonoBehaviour
 
         bool grounded = IsGrounded();
         //Anim.SetBool("IsGrounded", grounded);
+    }
+
+    private void TryDropDown()
+    {
+        if (isDropping) return;
+
+        Collider2D platform = GetCurrentOneWayPlatform();
+        if (platform != null)
+        {
+            StartCoroutine(DropDownRoutine(platform));
+        }
+    }
+
+    private Collider2D GetCurrentOneWayPlatform()
+    {
+        Vector2 origin = transform.position;
+        Vector2 size = new Vector2(0.8f, 0.1f);
+
+        Collider2D hit = Physics2D.OverlapBox(origin + Vector2.down * 0.6f, size, 0f, LayerMask.GetMask("Stair"));
+        if (hit != null && hit.GetComponent<PlatformEffector2D>() != null)
+        {
+            return hit;
+        }
+
+        return null;
+    }
+
+    private IEnumerator DropDownRoutine(Collider2D platform)
+    {
+        isDropping = true;
+
+        Physics2D.IgnoreCollision(playerCollider, platform, true);
+
+        yield return new WaitForSeconds(dropDownTime);
+
+        Physics2D.IgnoreCollision(playerCollider, platform, false);
+
+        isDropping = false;
     }
 }
