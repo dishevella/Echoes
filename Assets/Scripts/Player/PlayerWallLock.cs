@@ -30,6 +30,9 @@ public class PlayerWallLock : MonoBehaviour
 
     private void AnalyseCollision(Collision2D collision)
     {
+        if (collision.gameObject.CompareTag("Moveable"))
+            return;
+
         bool foundGround = false;
         bool foundLeftWall = false;
         bool foundRightWall = false;

@@ -1,30 +1,60 @@
 using UnityEngine;
+using System.Collections;
+using System;
 
-public class PlayerHealth : MonoBehaviour,IDamageable
+public class PlayerHealth : MonoBehaviour, IDamageable
 {
     public static PlayerHealth instance;
 
+    [Header("Death")]
+    public float deathY = -30f;
+    public float reliveDelay = 1f;
+
+    [Header("Death FX")]
+    public ParticleSystem deathParticles;
+    public float fadeDuration = 1f;
+
     private bool isDead = false;
-    private CheckPoint checkPoint;
+    public CheckPoint checkPoint;
+
+    private SpriteRenderer[] spriteRenderers;
+    private Collider2D[] colliders2D;
+    private Rigidbody2D rb;
+
+    private Color[] originalColors;
+    private Coroutine fadeCoroutine;
+
+    //public Action OnDead;
 
     private void Awake()
     {
         instance = this;
+
+        spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        colliders2D = GetComponentsInChildren<Collider2D>(true);
+        rb = GetComponent<Rigidbody2D>();
+
+        originalColors = new Color[spriteRenderers.Length];
+        for (int i = 0; i < spriteRenderers.Length; i++)
+        {
+            if (spriteRenderers[i] != null)
+            {
+                originalColors[i] = spriteRenderers[i].color;
+            }
+        }
     }
 
     private void Update()
     {
-        if(transform.position.y < -30f && !isDead)
+        if (transform.position.y < deathY && !isDead)
         {
             Die();
         }
-        if (Input.GetKeyDown(KeyCode.S)) Die();
     }
 
     public void TakeDamage(DamageInfo info)
     {
         if (isDead) return;
-
         Die();
     }
 
@@ -34,14 +64,78 @@ public class PlayerHealth : MonoBehaviour,IDamageable
 
         isDead = true;
 
-        // ❌ 不要立刻隐藏
-        // gameObject.SetActive(false);
+        if (MovementController.instance != null)
+        {
+            MovementController.instance.StopMove(reliveDelay);
+        }
 
-        // ⭐ 停止玩家控制（关键）
-        MovementController.instance.StopMove(2f);
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.simulated = false;
+        }
 
-        // ⭐ 1秒后再复活
-        Invoke(nameof(Relive), 1f);
+        foreach (Collider2D col in colliders2D)
+        {
+            if (col != null)
+            {
+                col.enabled = false;
+            }
+        }
+
+        if (deathParticles != null)
+        {
+            ParticleSystem ps = Instantiate(deathParticles, transform.position, Quaternion.identity);
+            ps.Play();
+            Destroy(ps.gameObject, 3f);
+        }
+
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+        }
+        fadeCoroutine = StartCoroutine(FadeOut());
+
+        CancelInvoke(nameof(Relive));
+        Invoke(nameof(Relive), reliveDelay);
+    }
+
+    private void KillAllEnemies()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            if (enemies[i] != null)
+            {
+                enemies[i].SetActive(false);
+            }
+        }
+    }
+
+    private IEnumerator FadeOut()
+    {
+        float timer = 0f;
+
+        while (timer < fadeDuration)
+        {
+            timer += Time.deltaTime;
+            float t = Mathf.Clamp01(timer / fadeDuration);
+            float alpha = Mathf.Lerp(1f, 0f, t);
+
+            for (int i = 0; i < spriteRenderers.Length; i++)
+            {
+                if (spriteRenderers[i] == null) continue;
+
+                Color c = originalColors[i];
+                c.a = alpha;
+                spriteRenderers[i].color = c;
+            }
+
+            yield return null;
+        }
+
+        fadeCoroutine = null;
     }
 
     public void SetCheckPoint(CheckPoint checkPoint)
@@ -51,15 +145,47 @@ public class PlayerHealth : MonoBehaviour,IDamageable
 
     private void Relive()
     {
-        gameObject.SetActive(true);
-        // ⭐ 恢复动画状态
-        Animator anim = GetComponent<Animator>();
-        if (anim != null)
+        // 先停掉淡出协程，防止继续把角色拉透明
+        if (fadeCoroutine != null)
         {
-            anim.SetBool("Dead", false);
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
         }
+
+        // 复活位置
+        if (checkPoint != null)
+        {
+            transform.position = checkPoint.transform.position;
+        }
+
+        // 恢复刚体
+        if (rb != null)
+        {
+            rb.simulated = true;
+            rb.linearVelocity = Vector2.zero;
+        }
+
+        // 恢复碰撞
+        foreach (Collider2D col in colliders2D)
+        {
+            if (col != null)
+            {
+                col.enabled = true;
+            }
+        }
+
+        // 恢复显示
+        for (int i = 0; i < spriteRenderers.Length; i++)
+        {
+            if (spriteRenderers[i] == null) continue;
+
+            spriteRenderers[i].enabled = true;
+            spriteRenderers[i].color = originalColors[i];
+        }
+
         isDead = false;
-        transform.position = checkPoint.transform.position;
+
+        LevelReset.instance.ObjectRespawn();
     }
 
     public bool IsDead()

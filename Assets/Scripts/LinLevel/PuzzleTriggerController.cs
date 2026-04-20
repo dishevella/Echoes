@@ -26,6 +26,7 @@ public class PuzzleTriggerController : MonoBehaviour
             PuzzleExampleController.instance.HideExample();
             Invoke(nameof(Resume), 0.5f);
             puzzleDoor.Open();
+            PuzzleExampleController.instance.HidePuzzleDoorAfterDelay(1f);
         }
     }
 
