@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyC2 : MonoBehaviour, ISonarScannable
+public class Sister: MonoBehaviour, ISonarScannable
 {
     [Header("Reference")]
     public TwinManager manager;
