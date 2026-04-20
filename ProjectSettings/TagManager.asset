@@ -17,6 +17,7 @@ TagManager:
   - Stair
   - Puzzle
   - EnemyIgnoreWall
+  - Missile
   layers:
   - Default
   - TransparentFX
@@ -53,6 +54,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Top
+    uniqueID: 614214939
     locked: 0
   m_RenderingLayers:
   - Default

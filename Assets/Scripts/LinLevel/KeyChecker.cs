@@ -14,6 +14,7 @@ public class KeyChecker : MonoBehaviour
             BagSystem.instance.UseProp();
             open.SetActive(true);
             close.SetActive(false);
+            PlayAudio.instance.PlayOpenBox();
         }
     }
 }
