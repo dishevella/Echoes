@@ -52,7 +52,7 @@ public class LevelReset : MonoBehaviour
             }
 
             // 2️⃣ 生成新实例
-            GameObject newObj = Instantiate(obj.levelObject, obj.spawnPosition.position, Quaternion.identity);
+            GameObject newObj = Instantiate(obj.levelObject, obj.spawnPosition.position,obj.levelObject.transform.rotation);
 
             // 3️⃣ 记录
             spawnedDict[obj.spawnID] = newObj;
