@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
@@ -22,6 +23,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     private Color[] originalColors;
     private Coroutine fadeCoroutine;
+
+    //public Action OnDead;
 
     private void Awake()
     {
@@ -95,6 +98,19 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
         CancelInvoke(nameof(Relive));
         Invoke(nameof(Relive), reliveDelay);
+    }
+
+    private void KillAllEnemies()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            if (enemies[i] != null)
+            {
+                enemies[i].SetActive(false);
+            }
+        }
     }
 
     private IEnumerator FadeOut()
