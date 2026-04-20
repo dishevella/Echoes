@@ -3512,7 +3512,7 @@ SpriteRenderer:
   m_Size: {x: 44.281082, y: 21.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1238129467
@@ -4784,6 +4784,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5211222000546740943, guid: e70dcb1d634ee5544bffe952ce09d2ee, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5357677715836607422, guid: e70dcb1d634ee5544bffe952ce09d2ee, type: 3}
       propertyPath: checkPoint
       value: 
@@ -4839,9 +4843,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5394727883632291149, guid: e70dcb1d634ee5544bffe952ce09d2ee, type: 3}
       insertIndex: 1
       addedObject: {fileID: 1818212764}
-    - targetCorrespondingSourceObject: {fileID: 5394727883632291149, guid: e70dcb1d634ee5544bffe952ce09d2ee, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1818212762}
     - targetCorrespondingSourceObject: {fileID: 5394727883632291149, guid: e70dcb1d634ee5544bffe952ce09d2ee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1818212763}
@@ -5935,30 +5936,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73919f5c6d3721f4ebb4c7e44af3a6ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWallLock
---- !u!114 &1818212762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 210946272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6243767b6f32be6449aebdd9a383ed36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BagSystem
-  propSOList: []
-  exampleSOList:
-  - {fileID: 11400000, guid: bbf6f34b10c8cfc44a2f86502cd9ed6d, type: 2}
-  - {fileID: 11400000, guid: 96ccda2cdffd3d446a41678fe6c99711, type: 2}
-  - {fileID: 11400000, guid: 3fd05d22e044179428116dc7e1f1ef1b, type: 2}
-  - {fileID: 11400000, guid: f7658f75f42f4a04aa869bd232d65066, type: 2}
-  - {fileID: 11400000, guid: 369088c13c137fb46ae3f7741fd8182c, type: 2}
-  selectedPropSO: {fileID: 0}
-  selectedSlotList:
-  - {fileID: 1540186732}
-  - {fileID: 1710074301}
-  - {fileID: 1774331007}
 --- !u!82 &1818212763
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6071,6 +6048,7 @@ MonoBehaviour:
   jump: {fileID: 8300000, guid: 5702b9f78cd134f47b2e401a56e65163, type: 3}
   walk1: {fileID: 8300000, guid: 956a4eda311bdac40b712eb6667ef1b5, type: 3}
   walk2: {fileID: 8300000, guid: 81c03ca9a81a0674c9e738f775e2057e, type: 3}
+  pickup: {fileID: 0}
 --- !u!1 &1831381231
 GameObject:
   m_ObjectHideFlags: 0
