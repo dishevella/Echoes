@@ -1,8 +1,12 @@
 using UnityEngine;
 
-public class SisterWakeTrigger : MonoBehaviour
+public class TwinWakeTrigger : MonoBehaviour
 {
+    [Header("Targets")]
+    public Brother targetBrother;
     public Sister targetSister;
+
+    [Header("Option")]
     public bool triggerOnce = true;
 
     private bool hasTriggered = false;
@@ -11,9 +15,17 @@ public class SisterWakeTrigger : MonoBehaviour
     {
         if (hasTriggered && triggerOnce) return;
         if (!collision.CompareTag("Player")) return;
-        if (targetSister == null) return;
 
-        targetSister.StartMoving();
+        if (targetBrother != null)
+        {
+            targetBrother.StartMoving();
+        }
+
+        if (targetSister != null)
+        {
+            targetSister.StartMoving();
+        }
+
         hasTriggered = true;
     }
 }

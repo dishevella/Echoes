@@ -14,21 +14,24 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
 
     [Header("Ground Check")]
     public Transform groundCheck;
-    public float groundCheckRadius = 0.15f;
+    public float groundCheckRadius = 0.3f;
     public LayerMask groundLayer;
 
     [Header("Wall Check")]
     public Transform wallCheck;
     public float wallCheckDistance = 0.2f;
+    public LayerMask wallLayer;
 
     [Header("Gap Check")]
     public Transform edgeCheck;
-    public float edgeCheckDistance = 0.5f;
+    public float edgeCheckDistance = 1f;
 
     [Header("Jump Logic")]
     public float jumpCooldown = 0.4f;
-    public float playerHigherThreshold = 0.8f;
-    public float gapJumpThreshold = 2.5f;
+    public float playerHigherThreshold = 0.2f;
+
+    [Header("Animation")]
+    public Animator animator;
 
     private Rigidbody2D rb;
     private float freezeTimer = 0f;
@@ -45,6 +48,9 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        if (animator == null)
+            animator = GetComponent<Animator>();
     }
 
     public void OnSonarScanned()
@@ -53,36 +59,34 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
         freezeTimer = freezeTime;
     }
 
-    private void Update()
-    {
-        if (isDead) return;
-
-        CheckEnvironment();
-
-        if (jumpCooldownTimer > 0f)
-        {
-            jumpCooldownTimer -= Time.deltaTime;
-        }
-    }
-
     private void FixedUpdate()
     {
         if (isDead)
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            SetMoveAnimation(false, 0f);
             return;
+        }
+
+        CheckEnvironment();
+
+        if (jumpCooldownTimer > 0f)
+        {
+            jumpCooldownTimer -= Time.fixedDeltaTime;
         }
 
         if (freezeTimer > 0f)
         {
             freezeTimer -= Time.fixedDeltaTime;
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            SetMoveAnimation(false, 0f);
             return;
         }
 
         if (!canChase || player == null)
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            SetMoveAnimation(false, 0f);
             return;
         }
 
@@ -106,29 +110,25 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
         }
 
         rb.linearVelocity = new Vector2(dirX * moveSpeed, rb.linearVelocity.y);
-
-        Debug.Log($"Grounded:{isGrounded} Wall:{isWallAhead} Gap:{isGapAhead} deltaY:{deltaY} cooldown:{jumpCooldownTimer}");
+        SetMoveAnimation(Mathf.Abs(dirX) > 0.01f, dirX);
 
         if (!isGrounded) return;
         if (jumpCooldownTimer > 0f) return;
 
         if (isWallAhead)
         {
-            Debug.Log("Jump because wall");
             Jump();
             return;
         }
 
-        if (isGapAhead && Mathf.Abs(deltaX) <= gapJumpThreshold)
+        if (isGapAhead)
         {
-            Debug.Log("Jump because gap");
             Jump();
             return;
         }
 
         if (deltaY > playerHigherThreshold)
         {
-            Debug.Log("Jump because player higher");
             Jump();
             return;
         }
@@ -151,8 +151,6 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
             );
 
             isGrounded = groundHit != null;
-
-            Debug.Log("Ground Hit = " + (groundHit != null ? groundHit.name : "NONE"));
         }
         else
         {
@@ -167,11 +165,10 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
                 wallCheck.position,
                 faceDir,
                 wallCheckDistance,
-                groundLayer
+                wallLayer
             );
 
             isWallAhead = wallHit.collider != null;
-            Debug.Log("Wall Hit = " + (wallHit.collider != null ? wallHit.collider.name : "NONE"));
         }
         else
         {
@@ -188,7 +185,6 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
             );
 
             isGapAhead = edgeHit.collider == null;
-            Debug.Log("Edge Hit = " + (edgeHit.collider != null ? edgeHit.collider.name : "NONE"));
         }
         else
         {
@@ -205,6 +201,18 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
         transform.localScale = scale;
     }
 
+    private void SetMoveAnimation(bool isMoving, float dirX)
+    {
+        if (animator == null) return;
+
+        animator.SetBool("Move", isMoving);
+
+        if (Mathf.Abs(dirX) > 0.01f)
+        {
+            animator.SetFloat("FaceX", dirX > 0f ? 1f : -1f);
+        }
+    }
+
     public void StartChasing()
     {
         if (isDead) return;
@@ -215,27 +223,6 @@ public class WoodenEnemy : MonoBehaviour, ISonarScannable
     {
         isDead = true;
         rb.linearVelocity = Vector2.zero;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (groundCheck != null)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-        }
-
-        if (wallCheck != null)
-        {
-            Gizmos.color = Color.red;
-            Vector3 dir = facingRight ? Vector3.right : Vector3.left;
-            Gizmos.DrawLine(wallCheck.position, wallCheck.position + dir * wallCheckDistance);
-        }
-
-        if (edgeCheck != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(edgeCheck.position, edgeCheck.position + Vector3.down * edgeCheckDistance);
-        }
+        SetMoveAnimation(false, 0f);
     }
 }

@@ -15,4 +15,5 @@ public class EnemyDamage : MonoBehaviour
         };
         damageable.TakeDamage(info);
     }
+
 }
