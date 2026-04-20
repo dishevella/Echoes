@@ -11,10 +11,16 @@ public class DoorTrigger : MonoBehaviour
     private bool isOpen = false;
     private bool isClose = false;
 
+    private Vector2 buttonOriginPos;
+    private Vector2 buttonTargetPos;
+
     private void Start()
     {
         originPos = door.transform.position;
         targetPos = originPos + Vector2.up * 5f;
+
+        buttonOriginPos = transform.position;
+        buttonTargetPos = buttonOriginPos - Vector2.up * 0.3f;
     }
 
     private void Update()
@@ -22,10 +28,12 @@ public class DoorTrigger : MonoBehaviour
         if(isOpen)
         {
             door.transform.position = Vector2.Lerp(door.transform.position, targetPos, speed * Time.deltaTime);
+            transform.position = Vector2.Lerp(transform.position, buttonTargetPos, speed * Time.deltaTime);
         }
         else if(isClose)
         {
             door.transform.position = Vector2.Lerp(door.transform.position, originPos, speed * Time.deltaTime);
+            transform.position = Vector2.Lerp(transform.position, buttonOriginPos, speed * Time.deltaTime);
         }
     }
 
