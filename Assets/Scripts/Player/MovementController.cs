@@ -51,11 +51,9 @@ public class MovementController : MonoBehaviour
     [Header("Interaction")]
     public GameObject currentInteractiveObject;
 
-    [Header("Push Box")]
-    public LayerMask boxLayer;
-
     [Header("Drop")]
     public float dropDownTime = 0.3f;
+    public LayerMask dropLayerMask;
     private Collider2D playerCollider;
     private bool isDropping = false;
 
@@ -232,6 +230,7 @@ public class MovementController : MonoBehaviour
                 PlayAudio.instance.PlayPickup();
             }
             
+         
         }
     }
 
@@ -322,7 +321,7 @@ public class MovementController : MonoBehaviour
         Vector2 origin = transform.position;
         Vector2 size = new Vector2(0.8f, 0.1f);
 
-        Collider2D hit = Physics2D.OverlapBox(origin + Vector2.down * 0.6f, size, 0f, LayerMask.GetMask("Stair"));
+        Collider2D hit = Physics2D.OverlapBox(origin + Vector2.down * 0.6f, size, 0f, dropLayerMask);
         if (hit != null && hit.GetComponent<PlatformEffector2D>() != null)
         {
             return hit;

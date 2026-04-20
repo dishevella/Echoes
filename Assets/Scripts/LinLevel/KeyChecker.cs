@@ -14,6 +14,10 @@ public class KeyChecker : MonoBehaviour
             BagSystem.instance.UseProp();
             open.SetActive(true);
             close.SetActive(false);
+<<<<<<< HEAD
+=======
+            PlayAudio.instance.PlayOpenBox();
+>>>>>>> origin/LinKejun5
         }
     }
 }

@@ -15,9 +15,19 @@ public class PuzzleTrigger : MonoBehaviour
     public void Interact()
     {
         if (!PuzzleExampleController.instance.isTrigger) return;
+<<<<<<< HEAD
         darkForm.SetActive(false);
         lightForm.SetActive(true);
         PuzzleTriggerController.instance.OnTriggerActivate(triggerID);
+=======
+        if (!lightForm.activeInHierarchy)
+        {
+            PlayAudio.instance.PlayLighting();
+        }
+        darkForm.SetActive(false);
+        lightForm.SetActive(true);
+        PuzzleTriggerController.instance.OnTriggerActivate(triggerID);       
+>>>>>>> origin/LinKejun5
     }
 
     public void Resume()

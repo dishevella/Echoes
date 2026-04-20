@@ -25,7 +25,11 @@ public class PuzzleTriggerController : MonoBehaviour
             }
             PuzzleExampleController.instance.HideExample();
             Invoke(nameof(Resume), 0.5f);
+<<<<<<< HEAD
             puzzleDoor.Open();
+=======
+            puzzleDoor.Open();           
+>>>>>>> origin/LinKejun5
             PuzzleExampleController.instance.HidePuzzleDoorAfterDelay(1f);
         }
     }

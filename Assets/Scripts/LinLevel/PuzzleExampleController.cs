@@ -62,6 +62,11 @@ public class PuzzleExampleController : MonoBehaviour
                 isOpen = true;
                 puzzleDoor.gameObject.SetActive(false);
                 Invoke(nameof(HideSuccessDoor), 0.5f);
+<<<<<<< HEAD
+=======
+                PlayAudio.instance.PlayStone();
+                PlayAudio.instance.PlayPuzzleTrigger();
+>>>>>>> origin/LinKejun5
             }
         }
 
@@ -73,11 +78,22 @@ public class PuzzleExampleController : MonoBehaviour
 
     public void Interact()
     {
+<<<<<<< HEAD
         ShowPuzzleExample();
         puzzleDoor.gameObject.SetActive(true);
         puzzleDoor.Close();
         darkForm.SetActive(false);
         lightForm.SetActive(true);
+=======
+        if (isPass || isTrigger) return;
+        ShowPuzzleExample();
+        puzzleDoor.gameObject.SetActive(true);
+        puzzleDoor.Close();
+        PlayAudio.instance.PlayStone();
+        darkForm.SetActive(false);
+        lightForm.SetActive(true);
+        PlayAudio.instance.PlayPuzzleTrigger();
+>>>>>>> origin/LinKejun5
     }
 
     private void ShowPuzzleExample()
@@ -104,6 +120,10 @@ public class PuzzleExampleController : MonoBehaviour
     {
         for(int i=0;i<puzzleExamples.Length;i++)
         {
+<<<<<<< HEAD
+=======
+            PlayAudio.instance.PlayLighting();
+>>>>>>> origin/LinKejun5
             GameObject darkForm = puzzleExamples[numbers[i]].puzzleObject.transform.Find("CrystalLampDark").gameObject;
             GameObject lightForm = puzzleExamples[numbers[i]].puzzleObject.transform.Find("CrystalLampLight").gameObject;
 
