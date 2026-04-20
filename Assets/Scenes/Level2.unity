@@ -1487,7 +1487,7 @@ Transform:
   m_GameObject: {fileID: 393776117}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.53, y: -6.82, z: -10}
+  m_LocalPosition: {x: -10.42, y: -6.82, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1576,7 +1576,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  minX: -12.5
+  minX: -10.42
   maxX: 13.7
   minY: -6.8
   maxY: 4.8
@@ -5090,7 +5090,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5495721461334168405, guid: 5024974850db7084e9808b3e6e376508, type: 3}
       propertyPath: NextSceneName
-      value: StartMenu
+      value: Level3
       objectReference: {fileID: 0}
     - target: {fileID: 8635445145971826443, guid: 5024974850db7084e9808b3e6e376508, type: 3}
       propertyPath: m_Name

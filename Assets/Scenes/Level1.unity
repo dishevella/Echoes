@@ -5449,7 +5449,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 604471722}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -5490,7 +5490,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0.94097996, b: 0.11635202, a: 0.18431373}
+  m_Color: {r: 0.18823531, g: 0.10980393, b: 0.15294118, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -14422,6 +14422,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5495721461334168405, guid: 5024974850db7084e9808b3e6e376508, type: 3}
+      propertyPath: NextSceneName
+      value: Level2
+      objectReference: {fileID: 0}
     - target: {fileID: 8635445145971826443, guid: 5024974850db7084e9808b3e6e376508, type: 3}
       propertyPath: m_Name
       value: Portal
@@ -14485,11 +14489,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4816723493762558194, guid: e70dcb1d634ee5544bffe952ce09d2ee, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 23.67
+      value: 0.28
       objectReference: {fileID: 0}
     - target: {fileID: 4816723493762558194, guid: e70dcb1d634ee5544bffe952ce09d2ee, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.05
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5211222000546740943, guid: e70dcb1d634ee5544bffe952ce09d2ee, type: 3}
       propertyPath: m_Enabled
