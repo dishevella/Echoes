@@ -18,7 +18,6 @@ public class PlayerHealth : MonoBehaviour,IDamageable
         {
             Die();
         }
-        if (Input.GetKeyDown(KeyCode.S)) Die();
     }
 
     public void TakeDamage(DamageInfo info)

@@ -227,6 +227,10 @@ public class MovementController : MonoBehaviour
             {
                 puzzleExampleController.darkForm.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 200);
             }
+            else if(currentInteractiveObject.TryGetComponent<KeyChecker>(out var keyChecker))
+            {
+                keyChecker.close.GetComponent<SpriteRenderer>().color = new Color32(255, 255, 255, 100);
+            }
         }
     }
 
