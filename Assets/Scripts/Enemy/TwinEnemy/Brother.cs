@@ -250,7 +250,7 @@ public class Brother : MonoBehaviour, ISonarScannable
         facingRight = faceRight;
 
         Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * (facingRight ? 1f : -1f);
+        scale.x = Mathf.Abs(scale.x) * (facingRight ? -1f : 1f);
         transform.localScale = scale;
     }
 
@@ -262,7 +262,7 @@ public class Brother : MonoBehaviour, ISonarScannable
 
         if (Mathf.Abs(dirX) > 0.01f)
         {
-            animator.SetFloat("FaceX", dirX > 0f ? 1f : -1f);
+            animator.SetFloat("FaceX", dirX > 0f ? -1f : 1f);
         }
     }
 
