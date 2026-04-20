@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4231f37556e42ae43ab39ec1cdc06957, type: 3}
   m_Name: KeyRed
   m_EditorClassIdentifier: Assembly-CSharp::PropSO
-  prefab: {fileID: 404571866234995349, guid: 929f458ff3137c74b9068251ecc3cb55, type: 3}
+  prefab: {fileID: 8577870634023502045, guid: 3cc57fa9098ef194993da5e0bad1d07f, type: 3}
   image: {fileID: 0}
   propName: 

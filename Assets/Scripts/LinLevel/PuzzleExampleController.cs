@@ -95,6 +95,7 @@ public class PuzzleExampleController : MonoBehaviour
             }
 
             StartCoroutine(ShowPuzzleExampleInOrder());
+            CameraZoneScroller.instance.LockCameraForSeconds(5f);
         }
     }
 
