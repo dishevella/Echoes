@@ -15,8 +15,11 @@ public class SleepingBeauty : MonoBehaviour, ISonarScannable
     public LayerMask wallLayer;
 
     [Header("State")]
-    public bool isActivated = false;
-    public bool isDead = false;
+    [SerializeField]private bool isActivated = false;
+    [SerializeField]private bool isDead = false;
+    [SerializeField]private float spwanDelay= 0.5f;
+    [SerializeField]private bool canActivate;
+    private float timer;
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -30,8 +33,22 @@ public class SleepingBeauty : MonoBehaviour, ISonarScannable
 
         moveDir = startMoveRight ? 1 : -1;
         UpdateFace();
+
+        isActivated = false;
+        canActivate = false;
+        timer = 0;
     }
 
+    private void Update()
+    {
+        if(timer<spwanDelay)
+            timer += Time.deltaTime;
+        else if (!canActivate)
+        {
+            canActivate = true;
+        }
+    }
+    
     private void FixedUpdate()
     {
         if (isDead) return;
@@ -92,6 +109,7 @@ public class SleepingBeauty : MonoBehaviour, ISonarScannable
     public void Activate()
     {
         if (isDead) return;
+        if (!canActivate) return;
         isActivated = true;
         anim.SetTrigger("Activate");
     }
