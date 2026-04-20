@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Sister: MonoBehaviour, ISonarScannable
+public class Sister : MonoBehaviour, ISonarScannable
 {
     [Header("Reference")]
     public TwinManager manager;
@@ -12,6 +12,7 @@ public class Sister: MonoBehaviour, ISonarScannable
 
     private Rigidbody2D rb;
     private bool isDead = false;
+    private bool canMove = false; // 新增：trigger后才开始动
 
     private void Awake()
     {
@@ -32,14 +33,21 @@ public class Sister: MonoBehaviour, ISonarScannable
 
         if (manager == null || player == null)
         {
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        
+        // 新增：没触发前不能动
+        if (!canMove)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
+        // 被照到就完全不能动
         if (manager.SisScanned)
         {
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            rb.linearVelocity = Vector2.zero;
             return;
         }
 
@@ -48,7 +56,19 @@ public class Sister: MonoBehaviour, ISonarScannable
         float deltaX = player.position.x - transform.position.x;
         float dirX = deltaX >= 0f ? 1f : -1f;
 
-        rb.linearVelocity = new Vector2(dirX * speed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(dirX * speed, 0f);
+    }
+
+    public void StartMoving()
+    {
+        if (isDead) return;
+        canMove = true;
+    }
+
+    public void StopMoving()
+    {
+        canMove = false;
+        rb.linearVelocity = Vector2.zero;
     }
 
     public void Die()

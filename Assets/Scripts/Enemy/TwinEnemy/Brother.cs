@@ -21,7 +21,7 @@ public class Brother : MonoBehaviour, ISonarScannable
     {
         if (isDead) return;
         if (manager == null) return;
-
+       
         manager.MarkBroScanned();
     }
 
@@ -31,21 +31,22 @@ public class Brother : MonoBehaviour, ISonarScannable
 
         if (manager == null || player == null)
         {
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        
+        // 没被照到，不动
         if (!manager.BroScanned)
         {
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            rb.linearVelocity = Vector2.zero;
             return;
         }
 
+        // 被照到才动
         float deltaX = player.position.x - transform.position.x;
         float dirX = deltaX >= 0f ? 1f : -1f;
 
-        rb.linearVelocity = new Vector2(dirX * moveSpeed, rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(dirX * moveSpeed, 0f);
     }
 
     public void Die()
