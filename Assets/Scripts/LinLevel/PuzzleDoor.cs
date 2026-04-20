@@ -3,7 +3,7 @@ using UnityEngine;
 public class PuzzleDoor : MonoBehaviour
 {
     private Vector2 originPos;
-    private Vector2 targetPos;
+    public Transform targetPos;
     public float speed = 15f;
 
     public bool isOpen = false;
@@ -12,7 +12,6 @@ public class PuzzleDoor : MonoBehaviour
     private void Start()
     {
         originPos = transform.position;
-        targetPos = originPos - Vector2.up * 5f;
 
         gameObject.SetActive(false);
     }
@@ -21,7 +20,7 @@ public class PuzzleDoor : MonoBehaviour
     {
         if (isClose)
         {
-            transform.position = Vector2.Lerp(transform.position, targetPos, speed * Time.deltaTime);
+            transform.position = Vector2.Lerp(transform.position, targetPos.position, speed * Time.deltaTime);
         }
         else if (isOpen)
         {
