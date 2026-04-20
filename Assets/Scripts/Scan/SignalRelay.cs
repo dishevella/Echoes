@@ -4,13 +4,14 @@ using System.Collections.Generic;
 public class SignalRelay : MonoBehaviour, ISonarScannable
 {
     [Header("Relay Parts")]
-    public CircleCollider2D relayScanCollider;
+    public CircleCollider2D relayScanCollider;   // 现在只是辅助，不再拿它算初始半径
     public Transform relayVisualMask;
+    public SpriteMask relaySpriteMask;
 
     [Header("Relay Pulse")]
-    public float pulseDuration = 1.2f;
-    public float visualStartScale = 1f;
-    public float relayCooldown = 0.3f;
+    public float pulseDuration = 3f;
+    public float visualStartScale = 0.2f;
+    public float relayCooldown = 1f;
 
     [Header("Relay Chain")]
     public LayerMask relayLayer;
@@ -23,22 +24,28 @@ public class SignalRelay : MonoBehaviour, ISonarScannable
     private float currentRadius = 0f;
     private float lastTriggerTime = -999f;
 
+    private Vector3 originalMaskScale;
     private HashSet<SignalRelay> relaysTriggeredThisPulse = new HashSet<SignalRelay>();
 
     private void Awake()
     {
         scanner = GetComponent<SonarGhostScanner>();
 
+        if (relayVisualMask != null)
+        {
+            originalMaskScale = relayVisualMask.localScale;
+        }
+
+        // 如果这个 collider 只是给计算/辅助用，可以关掉
         if (relayScanCollider != null)
         {
-            pulseStartRadius = relayScanCollider.radius * Mathf.Abs(relayScanCollider.transform.localScale.x);
             relayScanCollider.enabled = false;
         }
 
         if (relayVisualMask != null)
         {
-            relayVisualMask.localScale = Vector3.zero;
             relayVisualMask.gameObject.SetActive(false);
+            relayVisualMask.localScale = Vector3.zero;
         }
     }
 
@@ -63,15 +70,31 @@ public class SignalRelay : MonoBehaviour, ISonarScannable
         lastTriggerTime = Time.time;
         isPulsing = true;
         pulseTimer = 0f;
-        currentRadius = pulseStartRadius;
 
         relaysTriggeredThisPulse.Clear();
 
         if (relayVisualMask != null)
         {
             relayVisualMask.gameObject.SetActive(true);
-            relayVisualMask.localScale = Vector3.one * visualStartScale;
+
+            // 先把视觉层设到起始大小
+            relayVisualMask.localScale = originalMaskScale * visualStartScale;
+
+            // 再从视觉层反推出真实半径
+            pulseStartRadius = GetVisualWorldRadius();
+            currentRadius = pulseStartRadius;
         }
+        else
+        {
+            // 没 visual 时兜底：还可以退回 collider 算法
+            if (relayScanCollider != null)
+            {
+                pulseStartRadius = relayScanCollider.radius * Mathf.Abs(relayScanCollider.transform.lossyScale.x);
+                currentRadius = pulseStartRadius;
+            }
+        }
+
+        Debug.Log("[Relay] 开始脉冲, radius = " + pulseStartRadius);
 
         DoScanAndRelay(currentRadius);
     }
@@ -83,11 +106,8 @@ public class SignalRelay : MonoBehaviour, ISonarScannable
 
         currentRadius = Mathf.Lerp(pulseStartRadius, 0f, t);
 
-        if (relayVisualMask != null)
-        {
-            float k = pulseStartRadius > 0.0001f ? currentRadius / pulseStartRadius : 0f;
-            relayVisualMask.localScale = Vector3.one * (visualStartScale * k);
-        }
+        // 用“真实半径”反推视觉 scale
+        SetVisualRadius(currentRadius);
 
         DoScanAndRelay(currentRadius);
 
@@ -132,13 +152,30 @@ public class SignalRelay : MonoBehaviour, ISonarScannable
         }
     }
 
+    float GetVisualWorldRadius()
+    {
+        if (relaySpriteMask == null || relaySpriteMask.sprite == null || relayVisualMask == null)
+            return 0f;
+
+        float spriteRadius = relaySpriteMask.sprite.bounds.extents.x;
+        return spriteRadius * Mathf.Abs(relayVisualMask.lossyScale.x);
+    }
+
+    void SetVisualRadius(float targetRadius)
+    {
+        if (relaySpriteMask == null || relaySpriteMask.sprite == null || relayVisualMask == null)
+            return;
+
+        float spriteRadius = relaySpriteMask.sprite.bounds.extents.x;
+        if (spriteRadius <= 0.0001f) return;
+
+        float targetScale = targetRadius / spriteRadius;
+        relayVisualMask.localScale = Vector3.one * targetScale;
+    }
+
     private void OnDrawGizmosSelected()
     {
-        if (relayScanCollider != null)
-        {
-            Gizmos.color = Color.cyan;
-            float r = relayScanCollider.radius * Mathf.Abs(relayScanCollider.transform.lossyScale.x);
-            Gizmos.DrawWireSphere(transform.position, r);
-        }
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, currentRadius > 0 ? currentRadius : pulseStartRadius);
     }
 }

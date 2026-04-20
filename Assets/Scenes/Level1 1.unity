@@ -561,7 +561,7 @@ Transform:
   m_GameObject: {fileID: 33801792}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.61, y: 5.48, z: 0}
+  m_LocalPosition: {x: 6.61, y: 5.48, z: 0}
   m_LocalScale: {x: 5.7399645, y: 0.79, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1190,7 +1190,7 @@ Transform:
   m_GameObject: {fileID: 171064301}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 26, y: 2.94, z: 0}
+  m_LocalPosition: {x: 23.02, y: 2.94, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3684,7 +3684,7 @@ Transform:
   m_GameObject: {fileID: 494540239}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 22.37, y: 0, z: -10}
+  m_LocalPosition: {x: 3.99, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4759,6 +4759,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 655828285}
   m_CullTransparentMesh: 1
+--- !u!1 &674999493
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 674999494}
+  m_Layer: 0
+  m_Name: SleepingBeauty2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &674999494
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 674999493}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 28.66, y: 2.94, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1211375199}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &721142850
 GameObject:
   m_ObjectHideFlags: 0
@@ -6344,6 +6375,11 @@ PolygonCollider2D:
       - {x: -0.5, y: -0.28866667}
       - {x: 0.5, y: -0.28866667}
   m_UseDelaunayMesh: 0
+--- !u!331 &945677018 stripped
+SpriteMask:
+  m_CorrespondingSourceObject: {fileID: 171931178267685007, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
+  m_PrefabInstance: {fileID: 2701131221010707722}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &952389841
 GameObject:
   m_ObjectHideFlags: 0
@@ -7403,12 +7439,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectRespawn
   objects:
-  - spawnID: SleepingBeauty
-    levelObject: {fileID: 7601214609848022882, guid: e11f26944a4b9ca4286cbb1590d3491d, type: 3}
-    spawnPosition: {fileID: 171064302}
   - spawnID: DroppingTriangle
     levelObject: {fileID: 6367943359156507751, guid: 61f4ef68970fcc241b9d8e492b4d023f, type: 3}
     spawnPosition: {fileID: 773261430}
+  - spawnID: SleepingBeauty1
+    levelObject: {fileID: 7601214609848022882, guid: e11f26944a4b9ca4286cbb1590d3491d, type: 3}
+    spawnPosition: {fileID: 171064302}
 --- !u!4 &1211375199
 Transform:
   m_ObjectHideFlags: 0
@@ -7423,6 +7459,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 171064302}
+  - {fileID: 674999494}
   - {fileID: 773261430}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9741,7 +9778,7 @@ Transform:
   m_GameObject: {fileID: 1718773478}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 13.16, y: 5.48, z: 0}
+  m_LocalPosition: {x: 12.64, y: 5.48, z: 0}
   m_LocalScale: {x: 1.5859677, y: 0.79, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10430,7 +10467,7 @@ Transform:
   m_GameObject: {fileID: 1901400120}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 12.85, y: -3.3999999, z: 0}
+  m_LocalPosition: {x: 13.14, y: -3.3999999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11542,7 +11579,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 388551529527831309, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 24.36
+      value: 24.84
       objectReference: {fileID: 0}
     - target: {fileID: 388551529527831309, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11580,6 +11617,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 473833036319448923, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
+      propertyPath: startAlpha
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 473833036319448923, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
+      propertyPath: ghostLifetime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 473833036319448923, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
+      propertyPath: targetCooldown
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1486802751625860643, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
+      propertyPath: relaySpriteMask
+      value: 
+      objectReference: {fileID: 945677018}
+    - target: {fileID: 1486802751625860643, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
+      propertyPath: visualStartScale
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1486802751625860643, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
+      propertyPath: relayLayer.m_Bits
+      value: 896
+      objectReference: {fileID: 0}
     - target: {fileID: 3892739115155444061, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
       propertyPath: m_Name
       value: SonarRelay
@@ -11596,7 +11657,8 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: 0.3261178
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3324137405420407035, guid: 3da324aa7d1edac488bd4778dfa42178, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
