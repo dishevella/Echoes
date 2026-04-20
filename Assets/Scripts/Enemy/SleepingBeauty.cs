@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class SleepingBeauty : MonoBehaviour, ISonarScannable
 {
@@ -24,6 +25,8 @@ public class SleepingBeauty : MonoBehaviour, ISonarScannable
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private int moveDir = 1; // 1 = right, -1 = left
+
+    public PlayerTouch playerTouch;
 
     private void Awake()
     {
