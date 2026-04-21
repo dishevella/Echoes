@@ -114,15 +114,15 @@ public class Sister : MonoBehaviour, ISonarScannable
             return;
         }
 
-        if (manager.SisScanned)
+        if (TryTeleportToNearestPoint())
         {
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             SetMoveAnimation(false, 0f);
             return;
         }
 
-        if (TryTeleportToNearestPoint())
+        if (manager.SisScanned)
         {
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             SetMoveAnimation(false, 0f);
             return;
         }

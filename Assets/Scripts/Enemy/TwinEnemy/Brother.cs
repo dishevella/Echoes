@@ -113,6 +113,12 @@ public class Brother : MonoBehaviour, ISonarScannable
             return;
         }
 
+        if (TryTeleportToNearestPoint())
+        {
+            SetMoveAnimation(false, 0f);
+            return;
+        }
+
         if (!manager.BroScanned)
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
@@ -120,11 +126,6 @@ public class Brother : MonoBehaviour, ISonarScannable
             return;
         }
 
-        if (TryTeleportToNearestPoint())
-        {
-            SetMoveAnimation(false, 0f);
-            return;
-        }
 
         ChasePlayer();
     }
